@@ -5,11 +5,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:text="test"
-        android:onClick="onCLick_Test"
+    <!--titlle -->
+    <LinearLayout
+        style="@style/title_layout_style">
+
+        <ImageView
+            style="@style/title_logo_style"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/title_logo"/>
+
+        <TextView
+            style="@style/title_txt_style"
+            android:layout_marginLeft="30dp"
+            android:text="  来  访  登  记  系  统  "/>
+    </LinearLayout>
+
+
+    <GridLayout
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:rowCount="2"
+        android:columnCount="2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
+
+
+        <Button
+            android:text="访客登记"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:text="离开登记"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="信息查询"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:text="配置信息"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </GridLayout>
+
 </LinearLayout>

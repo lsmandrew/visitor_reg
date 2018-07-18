@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.IDCardActivity">
+
+    <!--title-->
+    <LinearLayout
+        style="@style/title_layout_style">
+
+        <ImageView
+            style="@style/title_logo_style"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/title_logo"/>
+
+        <TextView
+            style="@style/title_txt_style"
+            android:layout_marginLeft="30dp"
+            android:text="  来  访  人  员  身  份  信  息  采  集  "/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include layout="@layout/visit_info"/>
+
+        <LinearLayout
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--身份证头像-->
+            <ImageView
+                android:id="@+id/headPhotoImageView_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/head_image"/>
+
+            <!--现场拍照图像-->
+            <ImageView
+                android:id="@+id/liveImageView_id"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="保存"
+            android:layout_margin="20dp"
+            android:textSize="40sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:text="取消"
+            android:layout_margin="20dp"
+            android:textSize="40sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</LinearLayout>

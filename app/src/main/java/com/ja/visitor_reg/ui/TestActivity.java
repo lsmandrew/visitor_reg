@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.api.HttpApi;
+import com.ja.visitor_reg.json.LOGIN_INFO;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -16,17 +17,59 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
     }
 
-    public void onClick_ApiReg(View view) {
+    public void onClick_ApiLogin(View view) {
         new Thread(
                 new Runnable() {
                     @Override
                     public void run() {
                         Log.d("TestActivity", "run: ");
                         HttpApi httpApi = new HttpApi();
-                        httpApi.Register_Request(null);
+                        LOGIN_INFO login_info =  new LOGIN_INFO();
+                        login_info.setDeviceName("ja-20180703-001");
+                        login_info.setPassword("123456");
+                        httpApi.Login_Request(login_info);
                     }
                 }
         ).start();
+    }
 
+    public void onClick_ApiLogout(View view) {
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TestActivity", "run: ");
+                        HttpApi httpApi = new HttpApi();
+                        httpApi.Logout_Request();
+                    }
+                }
+        ).start();
+    }
+
+
+    public void onClick_ApiGetDevID(View view) {
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TestActivity", "run: ");
+                        HttpApi httpApi = new HttpApi();
+                        httpApi.GetDevId_Request();
+                    }
+                }
+        ).start();
+    }
+
+    public void onClick_ApiGetDevInfo(View view) {
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TestActivity", "run: ");
+                        HttpApi httpApi = new HttpApi();
+                        httpApi.GetDevInfo_Request();
+                    }
+                }
+        ).start();
     }
 }

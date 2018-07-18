@@ -8,4 +8,33 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--title style-->
+    <style name="title_layout_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:background">#0000FF</item>
+        <item name="android:orientation">horizontal</item>
+
+    </style>
+
+    <style name="title_logo_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">1dp</item>
+
+    </style>
+
+    <style name="title_txt_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">100sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="id_info_txt_style">
+        <item name="android:textSize">40sp</item>
+    </style>
 </resources>

@@ -6,9 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.TestActivity">
+
     <Button
-        android:text="api_reg"
-        android:onClick="onClick_ApiReg"
+        android:text="api_login"
+        android:onClick="onClick_ApiLogin"
+        android:textAllCaps="false"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="api_logout"
+        android:onClick="onClick_ApiLogout"
+        android:textAllCaps="false"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="api_GetDevInfo"
+        android:onClick="onClick_ApiGetDevInfo"
+        android:textAllCaps="false"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="api_GetDevID"
+        android:onClick="onClick_ApiGetDevID"
+        android:textAllCaps="false"
+        android:layout_margin="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>
