@@ -7,9 +7,10 @@ import android.view.View;
 
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.api.HttpApi;
+import com.ja.visitor_reg.common.base.BaseActivity;
 import com.ja.visitor_reg.json.LOGIN_INFO;
 
-public class TestActivity extends AppCompatActivity {
+public class TestActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <Button
         android:text="访客信息"
+        android:onClick="onClick_Visitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button
         android:text="被访者信息"
+        android:onClick="onClick_Interviewee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:text="来访记录"
+        android:onClick="onClick_VisitRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:text="预约信息"
+        android:onClick="onClick_BookInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:text="白名单"
+        android:onClick="onClick_WhiteList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button
         android:text="黑名单"
+        android:onClick="onClick_BlackList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

@@ -35,6 +35,20 @@
     </style>
 
     <style name="id_info_txt_style">
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">70sp</item>
     </style>
+
+    <style name="id_item_txt_style">
+        <item name="android:layout_width">230dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawableBottom">@drawable/txt_line</item>
+    </style>
+
+
 </resources>
