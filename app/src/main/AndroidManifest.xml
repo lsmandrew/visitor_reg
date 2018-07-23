@@ -33,28 +33,31 @@
             </intent-filter>
         </receiver>
 
-
         <service
             android:name=".serve.AppUpgradeService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
         </service>
-        <!--长连接-->
+        <!-- 长连接 -->
         <service
             android:name=".serve.LongConnService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
+        </service>
+        <!--副屏-->
+        <service
+            android:name=".serve.SecondService"
+            android:enabled="true"
+            android:exported="false">
         </service>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN"/> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
-            <!-- </intent-filter> -->
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN"/>
+                 <category android:name="android.intent.category.LAUNCHER"/>
+             </intent-filter>
         </activity>
         <activity
             android:name=".ui.ConfigActivity"
@@ -67,25 +70,38 @@
         <activity
             android:name=".ui.IDCardActivity"
             android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
         </activity>
-        <activity android:name=".ui.QueryInfoActivity">
+        <activity
+            android:name=".ui.QueryInfoActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.VisitorInfoActivity">
+        <activity
+            android:name=".ui.VisitorInfoActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.InterviewInfoActivity">
+        <activity
+            android:name=".ui.InterviewInfoActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.VisitRecordActivity">
+        <activity
+            android:name=".ui.VisitRecordActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.BlackListActivity">
+        <activity
+            android:name=".ui.BlackListActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.WhiteListActivity">
+        <activity
+            android:name=".ui.WhiteListActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
-        <activity android:name=".ui.BookInfoActivity">
+        <activity
+            android:name=".ui.BookInfoActivity"
+            android:configChanges="orientation|keyboardHidden">
         </activity>
 
 

@@ -48,8 +48,8 @@
             style="@style/id_info_txt_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_width="230dp"
+        <Spinner
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 

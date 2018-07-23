@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/idcard_layout_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -65,12 +66,14 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/btn_save_id"
             android:text="保存"
             android:layout_margin="20dp"
             android:textSize="40sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
+            android:id="@+id/btn_take_id"
             android:text="拍照"
             android:layout_margin="20dp"
             android:textSize="40sp"
@@ -78,6 +81,7 @@
             android:layout_height="wrap_content"/>
         <Button
             android:text="取消"
+            android:id="@+id/btn_cancel_id"
             android:layout_margin="20dp"
             android:textSize="40sp"
             android:layout_width="wrap_content"
