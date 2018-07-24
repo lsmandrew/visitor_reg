@@ -68,23 +68,6 @@
 
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            style="@style/id_info_txt_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="住址 "/>
-
-        <TextView
-            style="@style/id_item_txt_style"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -100,20 +83,6 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            style="@style/id_info_txt_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="联系电话 "/>
-
-        <TextView
-            style="@style/id_item_txt_style"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
 
 
 </LinearLayout>
