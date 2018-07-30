@@ -23,50 +23,38 @@ public class IDCardActivity extends BaseActivity implements  View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_idcard);
+        setContentView(R.layout.activity_idcard2);
 //        View view = View.inflate(this, R.layout.activity_idcard, null);
 //        view.setOnClickListener(this);
 //        setContentView(view);
 
         //find
-        findbyall();
-        //listen
-        mBtnSave.setOnClickListener(this);
-        mBtnCancel.setOnClickListener(this);
-        mBtnTake.setOnClickListener(this);
-        mRootLayout.setOnClickListener(this);
-        // 创建弹出键盘
-        mPopupKeyboard = new PopupKeyboard(this);
-        // 弹出键盘内部包含一个KeyboardView，在此绑定输入两者关联。
-        mPopupKeyboard.attach(mInputView, this);
+//        findbyall();
+//        //listen
+//        mBtnSave.setOnClickListener(this);
+//        mBtnCancel.setOnClickListener(this);
+//        mBtnTake.setOnClickListener(this);
+//        mRootLayout.setOnClickListener(this);
+//        // 创建弹出键盘
+//        mPopupKeyboard = new PopupKeyboard(this);
+//        // 弹出键盘内部包含一个KeyboardView，在此绑定输入两者关联。
+//        mPopupKeyboard.attach(mInputView, this);
 
 
     }
 
     private void findbyall(){
         //find
-        mInputView = findViewById(R.id.car_keyboard_id);
-        mBtnSave = findViewById(R.id.btn_save_id);
-        mBtnCancel = findViewById(R.id.btn_cancel_id);
-        mBtnTake = findViewById(R.id.btn_take_id);
-        mRootLayout = findViewById(R.id.idcard_layout_id);
+//        mInputView = findViewById(R.id.car_keyboard_id);
+//        mBtnSave = findViewById(R.id.btn_save_id);
+//        mBtnCancel = findViewById(R.id.btn_cancel_id);
+//        mBtnTake = findViewById(R.id.btn_take_id);
+//        mRootLayout = findViewById(R.id.idcard_layout_id);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.car_keyboard_id:
-                Log.d("IDCardActivity", "onClick: ");
-                break;
-            case R.id.btn_cancel_id:
-                Log.d("IDCardActivity", "cancel onClick: ");
-                break;
-            case R.id.btn_save_id:
-                Log.d("IDCardActivity", "save onClick: ");
-                break;
-            case R.id.btn_take_id:
-                Log.d("IDCardActivity", "take onClick: ");
-                break;
             default:
                 Log.d("IDCardActivity", "Other onClick: ");
                 mPopupKeyboard.dismiss(this);

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="visit_causes">
+        <item>商务</item>
+        <item>政务</item>
+        <item>军务</item>
+    </string-array>
+
+    <string-array name="cert_types">
+        <item>学生证</item>
+        <item>身份证</item>
+        <item>军官证</item>
+    </string-array>
+
+    <string-array name="sex_types">
+        <item>男</item>
+        <item>女</item>
+        <item>不详</item>
+    </string-array>
+
+</resources>

@@ -44,20 +44,21 @@
             android:enabled="true"
             android:exported="false">
         </service>
-        <!--副屏-->
+        <!-- 副屏 -->
         <service
             android:name=".serve.SecondService"
             android:enabled="true"
             android:exported="false">
         </service>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden">
 
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN"/>
-                 <category android:name="android.intent.category.LAUNCHER"/>
-             </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.ConfigActivity"
@@ -103,8 +104,14 @@
             android:name=".ui.BookInfoActivity"
             android:configChanges="orientation|keyboardHidden">
         </activity>
-
-
+        <activity
+            android:name=".ui.IndexActivity"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

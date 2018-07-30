@@ -50,5 +50,45 @@
         <item name="android:drawableBottom">@drawable/txt_line</item>
     </style>
 
+    <style name="right_tag_style">
+        <!-- Customize your theme here. -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
 
+        <item name="android:button">@android:color/transparent</item>
+        <item name="android:drawablePadding">3dp</item>
+        <item name="android:gravity">center_horizontal</item>
+
+        <item name="android:textColor">@drawable/right_btn_txt_selector</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="table_head_txt_comm">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="table_txt_comm">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="table_bottom_btn">
+        <item name="android:textSize">25sp</item>
+
+    </style>
+
+    <!--dialog-->
+    <style name="dialog_layout_bottom" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
 </resources>

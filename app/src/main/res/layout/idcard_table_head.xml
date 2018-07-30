@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:gravity="center"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+
+    <!--visitors nums-->
+    <TextView
+        android:id="@+id/tv_visitor_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        style="@style/table_head_txt_comm"
+        android:text="来访人数" />
+    <EditText
+        android:id="@+id/edt_visitor_count"
+        android:imeOptions="actionDone"
+        android:maxLength="3"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:layout_marginLeft="5dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
+    <!--isbook-->
+    <CheckBox
+        android:id="@+id/cb_isbook"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:text="预约"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <!--phone-->
+    <TextView
+        android:id="@+id/tv_book_phone"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="来访人预约使用的手机号" />
+    <EditText
+        android:id="@+id/edt_book_phone"
+        android:imeOptions="actionDone"
+        android:maxLength="11"
+        android:digits="0123456789"
+        android:inputType="phone"
+        android:layout_marginLeft="5dp"
+        style="@style/table_head_txt_comm"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"/>
+    <!--visit reason-->
+    <TextView
+        android:id="@+id/tv_visit_cause"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="来访事由" />
+    <Spinner
+        android:id="@+id/sp_cause"
+        android:layout_marginLeft="5dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:gravity="center_horizontal"/>
+
+    <!--interviewee-->
+    <TextView
+        android:id="@+id/tv_interviewee"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="被访人" />
+
+    <EditText
+        android:id="@+id/edt_interviewee"
+        android:layout_marginLeft="5dp"
+        android:maxLength="6"
+        android:clickable="true"
+        android:focusableInTouchMode="false"
+        style="@style/table_head_txt_comm"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
+    <!--interviewee phone-->
+    <TextView
+        android:id="@+id/tv_be_phone"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="被访人电话" />
+
+    <EditText
+        android:id="@+id/edt_be_phone"
+        android:layout_marginLeft="15dp"
+        android:maxLength="11"
+        android:digits="0123456789"
+        style="@style/table_head_txt_comm"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
+    <!--start-->
+    <Button
+        android:id="@+id/bt_startVisit"
+        android:layout_marginLeft="15dp"
+        style="@style/table_head_txt_comm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="开始登记" />
+</LinearLayout>

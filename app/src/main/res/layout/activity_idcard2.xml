@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--table header-->
+    <include
+        android:id="@+id/table_header"
+        layout="@layout/idcard_table_head"/>
+    <!--划线分割-->
+    <TextView
+        android:id="@+id/tv_line_01"
+        android:layout_width="match_parent"
+        android:background="@color/cardview_dark_background"
+        android:layout_below="@id/table_header"
+        android:layout_height="1dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_visit_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_line_01">
+
+            <include
+                android:id="@+id/visitor_info"
+                layout="@layout/visitor_idinfo2"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"/>
+
+
+            <!--头像-->
+            <ImageView
+                android:id="@+id/img_head"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tv_line_01"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@id/visitor_info"
+                android:background="#0A000000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_visit_info"
+            android:layout_toLeftOf="@id/img_camera"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_plate"
+                android:layout_marginRight="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="车牌"
+                style="@style/table_txt_comm"/>
+
+            <com.parkingwang.keyboard.view.InputView
+                android:id="@+id/input_view_car"
+                app:pwkInputTextSize="25sp"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="5"/>
+
+            <Button
+                android:id="@+id/btn_newpower_car"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pwk_change_to_energy"
+                style="@style/table_txt_comm"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:layout_toLeftOf="@id/img_camera"
+            android:layout_below="@id/ll_cert"
+            android:background="#37000000"/>
+
+    <LinearLayout
+        android:id="@+id/ll_btn_group"
+        android:orientation="horizontal"
+        android:layout_below="@+id/recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_take_head"
+            style="@style/table_bottom_btn"
+            android:text="拍摄头像"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_take_cert"
+            style="@style/table_bottom_btn"
+            android:text="拍摄证件"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_take_goods"
+            style="@style/table_bottom_btn"
+            android:text="拍摄物品"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_scan_cert"
+            style="@style/table_bottom_btn"
+            android:text="证件扫描"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_author_id"
+            style="@style/table_bottom_btn"
+            android:text="授权门禁-身份证"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_author_card"
+            style="@style/table_bottom_btn"
+            android:text="授权门禁-发卡"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_print_qr"
+            style="@style/table_bottom_btn"
+            android:text="授权门禁-打印二维码"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_finish"
+            style="@style/table_bottom_btn"
+            android:text="完成登记"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#000000"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/tv_line_01"
+        android:layout_toRightOf="@id/ll_visit_info"
+        android:layout_above="@id/ll_btn_group"/>
+
+</RelativeLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!--title-->
+    <LinearLayout
+        android:id="@+id/idcard_title"
+        android:layout_alignParentTop="true"
+        style="@style/title_layout_style">
+
+        <ImageView
+            style="@style/title_logo_style"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/title_logo"/>
+
+        <TextView
+            android:layout_gravity="center"
+            style="@style/title_txt_style"
+            android:layout_marginLeft="30dp"
+            android:text="    来    访    登    记    系    统"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <FrameLayout
+            android:id="@+id/fl_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <!--底部的RadioGroup-->
+        <RadioGroup
+            android:id="@+id/rg_main"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#11000000"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+
+            <RadioButton
+                android:id="@+id/rb_visit_in"
+                style="@style/right_tag_style"
+                android:drawableTop="@drawable/right_btn_img_in_selector"
+                android:text="来访登记"/>
+
+            <RadioButton
+                android:id="@+id/rb_visit_book"
+                style="@style/right_tag_style"
+                android:drawableTop="@drawable/right_btn_img_config_selector"
+                android:text="預約來訪"/>
+
+            <RadioButton
+                android:id="@+id/rb_visit_out"
+                style="@style/right_tag_style"
+                android:drawableTop="@drawable/right_btn_img_out_selector"
+                android:text="來訪簽退"/>
+
+
+            <RadioButton
+                android:id="@+id/rb_query_info"
+                style="@style/right_tag_style"
+                android:drawableTop="@drawable/right_btn_img_info_selector"
+                android:text="信息查詢"/>
+
+            <RadioButton
+                android:id="@+id/rb_more"
+                style="@style/right_tag_style"
+                android:drawableTop="@drawable/right_btn_img_config_selector"
+                android:text="更多..."/>
+
+        </RadioGroup>
+    </LinearLayout>
+</LinearLayout>
