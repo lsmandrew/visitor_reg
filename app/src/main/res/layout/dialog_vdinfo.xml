@@ -6,17 +6,23 @@
 
     <LinearLayout
         android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:text="请输入被访问者手机尾号"/>
 
         <EditText
             android:layout_marginLeft="30dp"
+            android:singleLine="true"
             android:layout_width="120dp"
+            android:digits="0123456789"
+            android:inputType="phone"
+            android:imeOptions="actionDone"
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
@@ -27,33 +33,53 @@
         <TextView
             android:text="所在部门"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            style="@style/dialog_vdinfo_list_title"
             android:layout_height="wrap_content"/>
         <TextView
             android:text="姓名"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            style="@style/dialog_vdinfo_list_title"
             android:layout_height="wrap_content"/>
         <TextView
             android:text="办公电话"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            style="@style/dialog_vdinfo_list_title"
             android:layout_height="wrap_content"/>
         <TextView
             android:text="是否同意来访"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            style="@style/dialog_vdinfo_list_title"
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <ListView
         android:id="@+id/lv_vd_info"
+        android:divider="@null"
+        android:listSelector="@drawable/dialog_vdinfo_item_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </ListView>
-    <Button
-        android:id="@+id/btn_vdinfo_confirm"
-        android:text="确定"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_vdinfo_confirm"
+            android:gravity="center"
+            android:text="确定"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 </LinearLayout>

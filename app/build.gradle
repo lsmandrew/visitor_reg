@@ -10,12 +10,20 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -38,5 +46,7 @@ dependencies {
     implementation 'com.parkingwang:keyboard:0.5.5'
     //滚动条
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-
+    //身份证库
+    implementation files('libs/telpo_api.jar')
+    implementation files('libs/IDCardReader.jar')
 }

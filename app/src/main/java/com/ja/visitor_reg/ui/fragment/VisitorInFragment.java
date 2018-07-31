@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -17,6 +18,7 @@ import com.ja.visitor_reg.common.base.BaseFragment;
 import com.ja.visitor_reg.model.CauseTypeItem;
 import com.ja.visitor_reg.model.CertTypeItem;
 import com.ja.visitor_reg.model.SexTypeItem;
+import com.ja.visitor_reg.model.VdInfoItem;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
 import com.orhanobut.logger.Logger;
 import com.parkingwang.keyboard.KeyboardInputController;
@@ -39,9 +41,9 @@ public class VisitorInFragment extends BaseFragment {
     private CertTypeAdapter mCertAdapter;
     private SexTypeAdapter  mSexAdapter;
     private CauseAdapter    mCauseAdapter;
-    private List<CertTypeItem>  mCertTypeList = new ArrayList<>();
-    private List<SexTypeItem>  mSexTypeList = new ArrayList<>();
-    private List<CauseTypeItem> mCauseTypeList = new ArrayList<>();
+    private List<CertTypeItem>  mCertTypeList = new ArrayList<CertTypeItem>();
+    private List<SexTypeItem>  mSexTypeList = new ArrayList<SexTypeItem>();
+    private List<CauseTypeItem> mCauseTypeList = new ArrayList<CauseTypeItem>();
     private PopupKeyboard mPopupKeyboard;
     @BindView(R.id.sp_cert_type) Spinner mSpCertType;
     @BindView(R.id.sp_sex_type) Spinner mSpSexType;
@@ -50,11 +52,13 @@ public class VisitorInFragment extends BaseFragment {
     @BindView(R.id.btn_newpower_car) Button mBtnNewPower;
     @BindView(R.id.edt_visitor_count) EditText mEdtVisitCount;
     @BindView(R.id.edt_interviewee) EditText mEdtInterviewee;
+    @BindView(R.id.edt_be_phone) EditText mEdtBePhone;
 
     @Override
     protected View initView() {
         View view = View.inflate(mContext, R.layout.activity_idcard2, null);
         ButterKnife.bind(this, view);
+        //view.setOnClickListener(this);
 
         return view;
     }
@@ -139,10 +143,33 @@ public class VisitorInFragment extends BaseFragment {
         //Logger.d("interviewee onClick");
         //query
         //create dialog
-        VdInfoDialog vdInfoDialog = new VdInfoDialog(mContext);
+        List<VdInfoItem> vdInfoList = new ArrayList<VdInfoItem>();
+        vdInfoList.add(new VdInfoItem("研发部", "李晓明", "11111111111", true));
+        vdInfoList.add(new VdInfoItem("市场调研部", "欧阳优雅", "22222222222", true));
+        vdInfoList.add(new VdInfoItem("软件部", "笑笑笑", "33333333333", true));
+        VdInfoDialog vdInfoDialog = new VdInfoDialog(mContext, vdInfoList);
+        vdInfoDialog.setOnGetVdInfoCallBack(new VdInfoDialog.OnGetVdInfoListener(){
+
+            @Override
+            public void getVdInfo(VdInfoItem vdInfoItem) {
+                mEdtInterviewee.setText(vdInfoItem.getName());
+                mEdtBePhone.setText(vdInfoItem.getWorkPhone());
+            }
+        });
         vdInfoDialog.show();
     }
 
 
+    /**
+     * 点击窗体关闭键盘
+     * @param v
+     */
+    @OnClick(R.id.layout_idcard2)
+    void  onClick_OtherWindow(View v) {
+        mPopupKeyboard.dismiss(getActivity());
+        //关闭软键盘
+        InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 
+    }
 }

@@ -13,7 +13,7 @@
             android:id="@+id/tv_cert_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:text="证件类型"
             style="@style/table_txt_comm"/>
 
@@ -35,10 +35,12 @@
 
         <EditText
             android:id="@+id/edt_cert_code"
-            android:layout_weight="6"
-            android:layout_width="wrap_content"
+            android:layout_weight="27"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="440602199101161531"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             style="@style/table_txt_comm"/>
@@ -58,10 +60,12 @@
 
         <EditText
             android:id="@+id/edt_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
             android:text="李小明"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             style="@style/table_txt_comm" />
@@ -99,9 +103,14 @@
         <EditText
             android:id="@+id/edt_visitor_phone"
             android:text="11111111111"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:inputType="phone"
+            android:digits="0123456789"
+            android:maxLength="11"
             android:layout_weight="10"
             android:textAlignment="center"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/table_txt_comm" />
     </LinearLayout>
@@ -120,9 +129,11 @@
         <EditText
             android:id="@+id/edt_visitor_unit"
             android:text="佛山市政府"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_weight="10"
             android:textAlignment="center"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/table_txt_comm" />
     </LinearLayout>
@@ -140,9 +151,11 @@
         <EditText
             android:id="@+id/edt_goods"
             android:text="手提电脑"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_weight="10"
             android:textAlignment="center"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/table_txt_comm" />
     </LinearLayout>

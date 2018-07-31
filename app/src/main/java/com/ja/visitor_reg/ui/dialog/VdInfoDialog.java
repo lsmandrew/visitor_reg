@@ -5,19 +5,39 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.ja.visitor_reg.R;
+import com.ja.visitor_reg.adapter.VdInfoAdapter;
+import com.ja.visitor_reg.model.VdInfoItem;
+import com.orhanobut.logger.Logger;
 
-public class VdInfoDialog {
+import java.util.List;
+
+public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemClickListener {
     private Context mContext; // 声明一个上下文对象
     private Dialog  mDialog; // 声明一个对话框对象
     private View    mView; // 声明一个视图对象
+    private ListView mListView;
+    private VdInfoAdapter mAdapter;
+    private List<VdInfoItem> mVdInfoList;
+    private OnGetVdInfoListener mGetVdInfListener;
+    private int mCurPos = -1;
 
-    public VdInfoDialog(Context context) {
+    public VdInfoDialog(Context context, List<VdInfoItem> list) {
         this.mContext = context;
         mView = View.inflate(mContext, R.layout.dialog_vdinfo, null);
         // 创建一个指定风格的对话框对象
         mDialog= new Dialog(context, R.style.dialog_layout_bottom);
+        //find
+        mListView = mView.findViewById(R.id.lv_vd_info);
+        //list
+        mVdInfoList = list;
+        mAdapter = new VdInfoAdapter(mContext, mVdInfoList);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
+        mView.findViewById(R.id.btn_vdinfo_confirm).setOnClickListener(this);
     }
 
     // 显示对话框
@@ -50,4 +70,33 @@ public class VdInfoDialog {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        Logger.i("Dialog Click---------");
+        if (v.getId() == R.id.btn_vdinfo_confirm) { // 点击了确定按钮
+            mDialog.dismiss(); // 关闭对话框
+            if (mGetVdInfListener != null) { // 如果存在添加完成监听器
+                // 回调监听器的addFriend方法
+                if (mCurPos >= 0) {
+                    mGetVdInfListener.getVdInfo(mVdInfoList.get(mCurPos));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Logger.i("listview Click---------");
+        mListView.setSelector(R.color.vdinfo_focus);
+        mCurPos = position;//save
+
+    }
+
+    public interface OnGetVdInfoListener {
+        void getVdInfo(VdInfoItem vdInfoItem);
+    }
+
+    public void setOnGetVdInfoCallBack(OnGetVdInfoListener listener){
+        mGetVdInfListener = listener;
+    }
 }
