@@ -1,6 +1,7 @@
 package com.ja.visitor_reg.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -8,26 +9,34 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.google.zxing.other.BeepManager;
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.adapter.CauseAdapter;
 import com.ja.visitor_reg.adapter.CertTypeAdapter;
 import com.ja.visitor_reg.adapter.SexTypeAdapter;
 import com.ja.visitor_reg.common.base.BaseFragment;
+import com.ja.visitor_reg.common.util.IdCardReaderUtil;
 import com.ja.visitor_reg.model.CauseTypeItem;
 import com.ja.visitor_reg.model.CertTypeItem;
 import com.ja.visitor_reg.model.SexTypeItem;
 import com.ja.visitor_reg.model.VdInfoItem;
+import com.ja.visitor_reg.ui.camera.CameraView;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
 import com.orhanobut.logger.Logger;
 import com.parkingwang.keyboard.KeyboardInputController;
 import com.parkingwang.keyboard.OnInputChangedListener;
 import com.parkingwang.keyboard.PopupKeyboard;
 import com.parkingwang.keyboard.view.InputView;
+import com.telpo.tps550.api.idcard.IdentityInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +62,10 @@ public class VisitorInFragment extends BaseFragment {
     @BindView(R.id.edt_visitor_count) EditText mEdtVisitCount;
     @BindView(R.id.edt_interviewee) EditText mEdtInterviewee;
     @BindView(R.id.edt_be_phone) EditText mEdtBePhone;
+    @BindView(R.id.edt_id_code)EditText mEdtIdCode;
+    @BindView(R.id.edt_name)EditText mEdtName;
+    @BindView(R.id.img_head) ImageView mImgHead;
+    @BindView(R.id.camera_preview)CameraView mCameraView;
 
     @Override
     protected View initView() {
@@ -138,6 +151,46 @@ public class VisitorInFragment extends BaseFragment {
         //mEdtVisitCount.setOnEditorActionListener();
     }
 
+
+
+    void ui_UpdateIdInfo(IdentityInfo info, Bitmap bitmapHead) {
+        mEdtIdCode.setText(info.getNo());
+        mEdtName.setText(info.getName().replace(" ", ""));
+        mSpSexType.setSelection(getPosBySex(info.getSex().substring(0, 1)));
+        if (null != bitmapHead) {
+            mImgHead.setImageBitmap(bitmapHead);
+
+        }
+    }
+
+    int getPosBySex(String sex) {
+        Map<String, Integer> sexMap = new HashMap<String, Integer>();
+        sexMap.put("男", 0);
+        sexMap.put("女", 1);
+        sexMap.put("不详", 2);
+        return sexMap.get(sex);
+
+    }
+
+    /**
+     * 拍照
+     */
+    void take_pic(){
+        mCameraView.doTakePicture();
+    }
+    /**
+     * 点击窗体隐藏键盘
+     * @param v
+     */
+    @OnClick(R.id.layout_idcard2)
+    void onClick_OtherWindow(View v) {
+        mPopupKeyboard.dismiss(getActivity());
+        //关闭软键盘
+        InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+    }
+
     @OnClick(R.id.edt_interviewee)
     void onClick_Interviewee(View view){
         //Logger.d("interviewee onClick");
@@ -160,16 +213,40 @@ public class VisitorInFragment extends BaseFragment {
     }
 
 
-    /**
-     * 点击窗体关闭键盘
-     * @param v
-     */
-    @OnClick(R.id.layout_idcard2)
-    void  onClick_OtherWindow(View v) {
-        mPopupKeyboard.dismiss(getActivity());
-        //关闭软键盘
-        InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    @OnClick(R.id.btn_scan_cert)
+    void onClick_Scan_Cert(View v) {
+        IdCardReaderUtil util = IdCardReaderUtil.getInstance();
+        util.start_ReadCardAsync(getActivity(), new IdCardReaderUtil.readIDCardListener() {
+            @Override
+            public void onReadIDCardInfo(IdentityInfo info, Bitmap bitmapHead) {
+
+                if (null != info) {
+                    Toast.makeText(mContext, "身份证读取成功", Toast.LENGTH_SHORT).show();
+                    //sucess 鸣叫
+                    BeepManager beepManager = new BeepManager(getActivity(), R.raw.beep);
+                    beepManager.playBeepSoundAndVibrate();
+                    //更新ui
+                    ui_UpdateIdInfo(info, bitmapHead);
+                } else {
+                    Toast.makeText(mContext, "身份证读取失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
+
+
+
+    @OnClick(R.id.btn_author_card)
+    void onClick_Author_Card(View v){
+
+    }
+
+    @OnClick(R.id.btn_take_head)
+    void onClick_TakeHead(View v){
+        take_pic();
+    }
+
+
+
 }
