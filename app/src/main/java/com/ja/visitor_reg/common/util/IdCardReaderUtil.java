@@ -108,6 +108,11 @@ public class IdCardReaderUtil {
         }
     }
 
+    /**
+     * 开启读身份证任务
+     * @param activity 当前活动
+     * @param listener 读取结果监听器注册
+     */
     public void start_ReadCardAsync(Activity activity, readIDCardListener listener) {
         mReadIDListener = listener;
 

@@ -152,13 +152,15 @@ public class CameraView extends SurfaceView {
         public void onPictureTaken(byte[] data, Camera camera) {
 
             Bitmap raw = null;
-            if (null != data) {
-                // 原始图像数据data是字节数组，需要将其解析成位图
-                raw = BitmapFactory.decodeByteArray(data, 0, data.length);
-                // 停止预览画面
-                mCamera.stopPreview();
-                mIsPreview = false;
+            //check
+            if (null == data) {
+                return;
             }
+            // 原始图像数据data是字节数组，需要将其解析成位图
+            raw = BitmapFactory.decodeByteArray(data, 0, data.length);
+            // 停止预览画面
+            mCamera.stopPreview();
+            mIsPreview = false;
             // 旋转位图
             Bitmap bitmap = BitmapUtil.getRotateBitmap(raw,
                     (mCameraType == Camera.CameraInfo.CAMERA_FACING_BACK) ? 90 : -90);

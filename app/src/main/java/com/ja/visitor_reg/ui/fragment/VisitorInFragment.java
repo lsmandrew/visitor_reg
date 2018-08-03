@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,12 +20,16 @@ import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.adapter.CauseAdapter;
 import com.ja.visitor_reg.adapter.CertTypeAdapter;
 import com.ja.visitor_reg.adapter.SexTypeAdapter;
+import com.ja.visitor_reg.adapter.VisitorInInfoAdapter;
 import com.ja.visitor_reg.common.base.BaseFragment;
 import com.ja.visitor_reg.common.util.IdCardReaderUtil;
+import com.ja.visitor_reg.entity.VisitEventEntity;
+import com.ja.visitor_reg.entity.VisitInfoEntity;
 import com.ja.visitor_reg.model.CauseTypeItem;
 import com.ja.visitor_reg.model.CertTypeItem;
 import com.ja.visitor_reg.model.SexTypeItem;
 import com.ja.visitor_reg.model.VdInfoItem;
+import com.ja.visitor_reg.model.VisitInInfoItem;
 import com.ja.visitor_reg.ui.camera.CameraView;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
 import com.orhanobut.logger.Logger;
@@ -50,10 +56,16 @@ public class VisitorInFragment extends BaseFragment {
     private CertTypeAdapter mCertAdapter;
     private SexTypeAdapter  mSexAdapter;
     private CauseAdapter    mCauseAdapter;
+    private VisitorInInfoAdapter m_VisitInAdapter;
     private List<CertTypeItem>  mCertTypeList = new ArrayList<CertTypeItem>();
     private List<SexTypeItem>  mSexTypeList = new ArrayList<SexTypeItem>();
     private List<CauseTypeItem> mCauseTypeList = new ArrayList<CauseTypeItem>();
+    private List<VisitInInfoItem> mVisitInList = new ArrayList<VisitInInfoItem>();
     private PopupKeyboard mPopupKeyboard;
+    private VisitEventEntity mEventEntity;
+    private VisitInfoEntity mVisitInfoEntity;
+    private boolean mIsStartCheckIn;
+
     @BindView(R.id.sp_cert_type) Spinner mSpCertType;
     @BindView(R.id.sp_sex_type) Spinner mSpSexType;
     @BindView(R.id.sp_cause) Spinner mSpCause;
@@ -66,6 +78,8 @@ public class VisitorInFragment extends BaseFragment {
     @BindView(R.id.edt_name)EditText mEdtName;
     @BindView(R.id.img_head) ImageView mImgHead;
     @BindView(R.id.camera_preview)CameraView mCameraView;
+    @BindView(R.id.recycle_view)RecyclerView mRecyVisitIn;
+    @BindView(R.id.btn_start_checkin)Button mBtnStartCheckIn;
 
     @Override
     protected View initView() {
@@ -115,7 +129,9 @@ public class VisitorInFragment extends BaseFragment {
                 Logger.i(number);
                 if(isCompleted){
                     //mInputView.setVisibility(View.INVISIBLE);
-                    mPopupKeyboard.dismiss(getActivity());
+                    if (null != getActivity()) {
+                        mPopupKeyboard.dismiss(getActivity());
+                    }
                 }
             }
 
@@ -133,9 +149,10 @@ public class VisitorInFragment extends BaseFragment {
         mCertAdapter = new CertTypeAdapter(mContext, mCertTypeList);
         mSpCertType.setAdapter(mCertAdapter);
         //sex type
-        mSexTypeList.add(new SexTypeItem("男"));
-        mSexTypeList.add(new SexTypeItem("女"));
-        mSexTypeList.add(new SexTypeItem("不详"));
+        String[] sexTypes = getResources().getStringArray(R.array.sex_types);
+        for (String item : sexTypes){
+            mSexTypeList.add(new SexTypeItem(item));
+        }
         mSexAdapter = new SexTypeAdapter(mContext, mSexTypeList);
         mSpSexType.setAdapter(mSexAdapter);
         //cause type
@@ -144,6 +161,17 @@ public class VisitorInFragment extends BaseFragment {
         mCauseTypeList.add(new CauseTypeItem("军务"));
         mCauseAdapter = new CauseAdapter(mContext, mCauseTypeList);
         mSpCause.setAdapter(mCauseAdapter);
+        //recycler
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        mRecyVisitIn.setLayoutManager(layoutManager);
+        mVisitInList.add(new VisitInInfoItem("李小萌", "欧阳有爱",
+                "", "", ""));
+        mVisitInList.add(new VisitInInfoItem("嘻嘻嘻", "哈哈哈",
+                "", "", ""));
+        mVisitInList.add(new VisitInInfoItem("急急急", "情悄悄",
+                "", "", ""));
+        m_VisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
+        mRecyVisitIn.setAdapter(m_VisitInAdapter);
         //bind
         //mEdtInterviewee.addTextChangedListener(new onTextWatcher());
         //mEdtInterviewee.setOnClickListener(new onAllClickListener());
@@ -159,12 +187,11 @@ public class VisitorInFragment extends BaseFragment {
         mSpSexType.setSelection(getPosBySex(info.getSex().substring(0, 1)));
         if (null != bitmapHead) {
             mImgHead.setImageBitmap(bitmapHead);
-
         }
     }
 
     int getPosBySex(String sex) {
-        Map<String, Integer> sexMap = new HashMap<String, Integer>();
+        Map<String, Integer> sexMap = new HashMap<>();
         sexMap.put("男", 0);
         sexMap.put("女", 1);
         sexMap.put("不详", 2);
@@ -180,11 +207,13 @@ public class VisitorInFragment extends BaseFragment {
     }
     /**
      * 点击窗体隐藏键盘
-     * @param v
+     * @param v 视图
      */
     @OnClick(R.id.layout_idcard2)
     void onClick_OtherWindow(View v) {
-        mPopupKeyboard.dismiss(getActivity());
+        if (null != getActivity()) {
+            mPopupKeyboard.dismiss(getActivity());
+        }
         //关闭软键盘
         InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
@@ -236,7 +265,6 @@ public class VisitorInFragment extends BaseFragment {
     }
 
 
-
     @OnClick(R.id.btn_author_card)
     void onClick_Author_Card(View v){
 
@@ -247,6 +275,66 @@ public class VisitorInFragment extends BaseFragment {
         take_pic();
     }
 
+    @OnClick(R.id.btn_start_checkin)
+    void onClick_Start_CheckIn(View v){
+        //title 不可编辑
+        //check
+        String strCount = mEdtVisitCount.getText().toString();
 
 
+        if (null == strCount || 0 == strCount.length()) {
+            return ;
+        }
+        //save 来访事件data
+        if (!mIsStartCheckIn) {
+            mBtnStartCheckIn.setText("重新登记");
+            mEventEntity = new VisitEventEntity();
+            mEventEntity.setVisitorCount(Integer.parseInt(strCount));
+        }else {
+            mBtnStartCheckIn.setText("开始登记");
+        }
+
+        mIsStartCheckIn = !mIsStartCheckIn;
+    }
+
+    /**
+     * 完成登记
+     */
+    @OnClick(R.id.btn_finish)
+    void onClick_Finish(View v) {
+        if (!vaild_VisitorInfo()){
+            Toast.makeText(mContext, "登记信息有误", Toast.LENGTH_SHORT).show();
+        }
+        //获取信息
+        VisitInfoEntity visitInfoEntity = new VisitInfoEntity();
+        get_VisitorInfo(visitInfoEntity);
+        //show visit info
+        //save db
+    }
+
+    /**
+     * 检测来访者信息是否有效
+     *
+     * @return true/false
+     */
+    private boolean vaild_VisitorInfo() {
+        String strName = mEdtName.getText().toString();
+        String strIdNum = mEdtIdCode.getText().toString();
+
+        if (null == strName || 0 == strName.length()) {
+            return false;
+        }
+
+        if (null == strIdNum || 0 == strIdNum.length()) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private void get_VisitorInfo(VisitInfoEntity visitEntity) {
+
+    }
+    
+    
 }

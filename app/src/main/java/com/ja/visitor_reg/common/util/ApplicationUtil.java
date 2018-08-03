@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.ja.visitor_reg.greendao.DaoMaster;
+import com.ja.visitor_reg.greendao.DaoMaster.DevOpenHelper;
+import com.ja.visitor_reg.greendao.DaoSession;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +26,26 @@ import java.util.List;
  */
 public class ApplicationUtil extends Application {
 
-    private static Context m_Content;//save content
-    private List<Activity> activityList = new ArrayList<>();
-    private static ApplicationUtil instance = null;
+    private static Context mContent;//save content
+    private static List<Activity> activityList;
+    private static ApplicationUtil mInstance = null;
+    private boolean ENCRYPTED = true;//是否使用加密数据库
+    private DaoSession mDaoSession = null;
+
+    public ApplicationUtil() {
+        mInstance = this;
+        activityList = new ArrayList<>();
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        m_Content = getApplicationContext();
+
+        mContent = getApplicationContext();
+        //init greendao
+        DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? "notes-db-encrypted" : "notes-db");
+        Database db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
+        mDaoSession = new DaoMaster(db).newSession();
         ////use Loger init////
         Logger.addLogAdapter(new AndroidLogAdapter() {
             @Override
@@ -39,8 +56,16 @@ public class ApplicationUtil extends Application {
         Logger.d("onCreate");
     }
 
+    /**
+     * 获取session
+     * @return DaoSession
+     */
+    public DaoSession getDaoSession() {
+        return mDaoSession;
+    }
+
     public static Context getContext(){
-        return m_Content;
+        return mContent;
     }
 
     ///////////////////Activity 管理////////////////////
@@ -64,10 +89,10 @@ public class ApplicationUtil extends Application {
      * 单例模式中获取唯一的Application实例
      **/
     public static synchronized ApplicationUtil getInstance() {
-        if (null == instance) {
-            instance = new ApplicationUtil();
+        if (null == mInstance) {
+            mInstance = new ApplicationUtil();
         }
-        return instance;
+        return mInstance;
     }
 
 }

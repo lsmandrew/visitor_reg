@@ -83,18 +83,56 @@
                 style="@style/table_txt_comm"/>
         </LinearLayout>
 
+    <!--table-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ll_btn_group"
+        android:layout_below="@id/ll_cert"
+        android:layout_toLeftOf="@id/camera_preview"
+        android:orientation="vertical">
+        <!--table head-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="来访者"
+                android:textSize="26sp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:text="被访者"
+                android:textSize="26sp"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:text="预约电话"
+                android:textSize="26sp"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_view"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
-            android:layout_toLeftOf="@id/camera_preview"
-            android:layout_below="@id/ll_cert"
+            android:layout_height="match_parent"
+
+
             android:background="#37000000"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_btn_group"
         android:orientation="horizontal"
-        android:layout_below="@+id/recycle_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="100dp">
         <Button

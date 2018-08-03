@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_visitin_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="李小白"/>
+
+        <TextView
+            android:id="@+id/tv_visitin_visited"
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="小白龙"/>
+        <TextView
+            android:id="@+id/tv_visitin_bookphone"
+            android:hint="11111111111"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ff0000" />
+    <!--&lt;!&ndash;头像(读身份证)&ndash;&gt;-->
+    <!--<ImageView-->
+        <!--android:id="@+id/img_visitin_head"-->
+        <!--android:background="#ff0000"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"/>-->
+    <!--&lt;!&ndash;人像(现场拍摄)&ndash;&gt;-->
+    <!--<ImageView-->
+        <!--android:id="@+id/img_visitin_portrait"-->
+        <!--android:background="#00ff00"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"/>-->
+    <!--&lt;!&ndash;随身物品&ndash;&gt;-->
+    <!--<ImageView-->
+        <!--android:id="@+id/img_visitin_goods"-->
+        <!--android:background="#0000ff"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"/>-->
+
+</LinearLayout>

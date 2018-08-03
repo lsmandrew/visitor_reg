@@ -12,13 +12,22 @@ import android.widget.Toast;
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.api.HttpApi;
 import com.ja.visitor_reg.common.base.BaseActivity;
+import com.ja.visitor_reg.common.util.ApplicationUtil;
+import com.ja.visitor_reg.entity.VisitEventEntity;
+import com.ja.visitor_reg.greendao.DaoSession;
+import com.ja.visitor_reg.greendao.VisitEventEntityDao;
 import com.ja.visitor_reg.json.LOGIN_INFO;
+import com.orhanobut.logger.Logger;
 import com.telpo.tps550.api.TelpoException;
 import com.telpo.tps550.api.idcard.IdCard;
 import com.telpo.tps550.api.idcard.IdentityInfo;
 
+import org.greenrobot.greendao.query.Query;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class TestActivity extends BaseActivity {
     private UsbManager   mUsbManager;
@@ -106,17 +115,96 @@ public class TestActivity extends BaseActivity {
         new IdcardTask().execute();
     }
 
-    class IdcardTask extends AsyncTask<Void, Integer, TelpoException>{
+    public void onClick_TestGreenDao(View view) {
+        new GreenDaoTask().execute();
+    }
+
+    class GreenDaoTask extends AsyncTask<Void, Integer, Boolean> {
+        private VisitEventEntityDao mEventDao;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            DaoSession daoSession = ApplicationUtil.getInstance().getDaoSession();
+            mEventDao = daoSession.getVisitEventEntityDao();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            //insert
+            insert_EventEntity();
+            //del
+            //del_EventEntity();
+            //update
+            update_EventEntity();
+            //query
+            query_EventEntity();
+            return  true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            super.onPostExecute(b);
+        }
+
+        //EventEntity Insert
+        private void insert_EventEntity() {
+            VisitEventEntity event = new VisitEventEntity();
+            event.setCauseId((long) 1);//来访事由
+            event.setIntervieweeId((long) 1);//受访者
+            event.setShifitId((long) 1);//班次id(保安)
+            event.setDeviceId((long) 1);
+            //登记设备
+            event.setVisitorCount(1);//来访人数
+            event.setInsetTime(new Date());//事件时间
+            event.setIs_upload(0);//是否已上传(0未,1已)
+            mEventDao.insert(event);
+            Logger.d("insert event entity");
+        }
+
+        //EventEntity Del
+        private void del_EventEntity() {
+            mEventDao.deleteByKey((long) 1);
+            Logger.d("del event entity");
+        }
+
+        //EventEntity Query
+        private void query_EventEntity() {
+            Query<VisitEventEntity> eventQuery;
+            eventQuery = mEventDao.queryBuilder().orderAsc(VisitEventEntityDao.Properties.InsetTime).build();
+            //get query data
+            Logger.d("query data");
+            List<VisitEventEntity> events = eventQuery.list();
+            for (VisitEventEntity eventItem : events){
+                Logger.d(eventItem);
+            }
+        }
+        //EventEntity Update
+        private void update_EventEntity() {
+            //query
+            Query<VisitEventEntity> eventQuery;
+            eventQuery = mEventDao.queryBuilder().where(VisitEventEntityDao.Properties.Id.eq(3)).build();
+            VisitEventEntity event = eventQuery.unique();
+            //update
+            if (null != event) {
+                event.setIs_upload(1);
+                mEventDao.update(event);
+            }
+            Logger.d("update data");
+        }
+
+    }
+
+    class IdcardTask extends AsyncTask<Void, Integer, TelpoException> {
 
         @Override
         protected TelpoException doInBackground(Void... voids) {
             TelpoException result = null;
             try {
-                if (isUsb()){
+                if (isUsb()) {
                     IdCard.open(IdCard.IDREADER_TYPE_USB, TestActivity.this);
                 }
                 mIdinfo = IdCard.checkIdCard(1000);
-            } catch (TelpoException e){
+            } catch (TelpoException e) {
                 result = e;
             }
 
@@ -132,4 +220,7 @@ public class TestActivity extends BaseActivity {
             }
         }
     }
+
+
+
 }
