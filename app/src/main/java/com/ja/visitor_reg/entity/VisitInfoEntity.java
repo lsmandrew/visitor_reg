@@ -62,6 +62,7 @@ public class VisitInfoEntity {
     private String book_phone;//预约电话
     private String deparment;//单位
     private String goods;//携带物品(文字描述)
+    private String car_plate;//车牌
     private String img_head;//头像(图片名)
     private String img_portrait;//人像(图片名)
     private String img_goods;//携带物品(图片名)
@@ -71,11 +72,11 @@ public class VisitInfoEntity {
     private Integer is_upload_in;//登记是否上传(0未,1已)
     private Integer is_upload_out;//退出是否上传(0未,1已)
 
-    @Generated(hash = 1668831236)
-    public VisitInfoEntity(Long id, String visitor_name, Long visit_event_id, String id_numer,
-                           String sex, String book_phone, String deparment, String goods, String img_head,
-                           String img_portrait, String img_goods, Date in_time, Date out_time,
-                           String system_id, Integer is_upload_in, Integer is_upload_out) {
+    @Generated(hash = 2122041397)
+    public VisitInfoEntity(Long id, String visitor_name, Long visit_event_id, String id_numer, String sex,
+            String book_phone, String deparment, String goods, String car_plate, String img_head,
+            String img_portrait, String img_goods, Date in_time, Date out_time, String system_id,
+            Integer is_upload_in, Integer is_upload_out) {
         this.id = id;
         this.visitor_name = visitor_name;
         this.visit_event_id = visit_event_id;
@@ -84,6 +85,7 @@ public class VisitInfoEntity {
         this.book_phone = book_phone;
         this.deparment = deparment;
         this.goods = goods;
+        this.car_plate = car_plate;
         this.img_head = img_head;
         this.img_portrait = img_portrait;
         this.img_goods = img_goods;
@@ -246,5 +248,13 @@ public class VisitInfoEntity {
                 ", is_upload_in=" + is_upload_in +
                 ", is_upload_out=" + is_upload_out +
                 '}';
+    }
+
+    public String getCar_plate() {
+        return this.car_plate;
+    }
+
+    public void setCar_plate(String car_plate) {
+        this.car_plate = car_plate;
     }
 }

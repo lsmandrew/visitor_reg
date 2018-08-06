@@ -25,6 +25,7 @@ public class CameraView extends SurfaceView {
     private Point mPicSize; //图片尺寸
     private boolean mIsPreview = false;
     private int mCameraType = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private String mPhotoPath = null;
 
     public CameraView(Context context) {
         this(context, null);
@@ -35,7 +36,7 @@ public class CameraView extends SurfaceView {
         this.mContext = context;
 
         mPreviewSize = new Point(640,480);
-//        mPicSize = new Point(640,480);
+        mPicSize = new Point(640,480);
         // 获取表面视图的表面持有者
         mHolder = getHolder();
         // 给表面持有者添加表面变更监听器
@@ -100,7 +101,7 @@ public class CameraView extends SurfaceView {
                 // 设置预览界面的尺寸
                 cameraParam.setPreviewSize(mPreviewSize.x, mPreviewSize.y);
                 // 设置图片的分辨率
-//                cameraParam.setPictureSize(mPicSize.x, mPicSize.y);
+                cameraParam.setPictureSize(mPicSize.x, mPicSize.y);
                 //设置图片格式
                 cameraParam.setPictureFormat(PixelFormat.JPEG);
                 //设置jpeg质量
@@ -138,7 +139,8 @@ public class CameraView extends SurfaceView {
 
     // 下面是单拍的代码
     // 执行拍照动作。外部调用该方法完成拍照
-    public void doTakePicture() {
+    public void doTakePicture(String picName) {
+        mPhotoPath = picName;
         if (mIsPreview && mCamera != null) {
             // 命令相机拍摄一张照片
             mCamera.takePicture(mShutterCallback, null, mPictureCallback);
@@ -164,12 +166,11 @@ public class CameraView extends SurfaceView {
             // 旋转位图
             Bitmap bitmap = BitmapUtil.getRotateBitmap(raw,
                     (mCameraType == Camera.CameraInfo.CAMERA_FACING_BACK) ? 90 : -90);
-            // 获取本次拍摄的照片保存路径
-//            mPhotoPath = String.format("%s%s.jpg", BitmapUtil.getCachePath(mContext),
-//                    DateUtil.getNowDateTime());
             // 保存照片文件
-//            BitmapUtil.saveBitmap(mPhotoPath, bitmap, "jpg", 80);
-//            Log.d(TAG, "bitmap.size=" + (bitmap.getByteCount() / 1024) + "K" + ", path=" + mPhotoPath);
+            if (null != mPhotoPath) {
+                BitmapUtil.saveBitmap(mPhotoPath, bitmap, "jpg", 80);
+            }
+            Logger.d("bitmap.size=" + (bitmap.getByteCount() / 1024) + "K" + ", path=" + mPhotoPath);
             // 再次进入预览画面
             mCamera.startPreview();
             mIsPreview = true;

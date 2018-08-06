@@ -2,14 +2,18 @@ package com.ja.visitor_reg.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.adapter.VdInfoAdapter;
+import com.ja.visitor_reg.api.HttpApi;
 import com.ja.visitor_reg.model.VdInfoItem;
 import com.orhanobut.logger.Logger;
 
@@ -19,6 +23,8 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
     private Context mContext; // 声明一个上下文对象
     private Dialog  mDialog; // 声明一个对话框对象
     private View    mView; // 声明一个视图对象
+    private EditText mEdtPhone;//手机尾号
+    private Button  mBtnSearch;//搜索
     private ListView mListView;
     private VdInfoAdapter mAdapter;
     private List<VdInfoItem> mVdInfoList;
@@ -32,6 +38,8 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
         mDialog= new Dialog(context, R.style.dialog_layout_bottom);
         //find
         mListView = mView.findViewById(R.id.lv_vd_info);
+        mBtnSearch = mView.findViewById(R.id.btn_vdinfo_search);
+        mBtnSearch.setOnClickListener(this);
         //list
         mVdInfoList = list;
         mAdapter = new VdInfoAdapter(mContext, mVdInfoList);
@@ -73,15 +81,23 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
     @Override
     public void onClick(View v) {
         Logger.i("Dialog Click---------");
-        if (v.getId() == R.id.btn_vdinfo_confirm) { // 点击了确定按钮
-            mDialog.dismiss(); // 关闭对话框
-            if (mGetVdInfListener != null) { // 如果存在添加完成监听器
-                // 回调监听器的addFriend方法
-                if (mCurPos >= 0) {
-                    mGetVdInfListener.getVdInfo(mVdInfoList.get(mCurPos));
+        switch (v.getId()) {
+            case R.id.btn_vdinfo_confirm:// 点击了确定按钮
+                mDialog.dismiss(); // 关闭对话框
+                if (mGetVdInfListener != null) { // 如果存在添加完成监听器
+                    // 回调监听器的addFriend方法
+                    if (mCurPos >= 0) {
+                        mGetVdInfListener.getVdInfo(mVdInfoList.get(mCurPos));
+                    }
                 }
-            }
+                break;
+            case R.id.btn_vdinfo_search:
+                Logger.d("search");
+                String phone = mEdtPhone.getText().toString();
+                new GetVisitedInfoTask().execute(phone);
+                break;
         }
+
     }
 
     @Override
@@ -99,4 +115,29 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
     public void setOnGetVdInfoCallBack(OnGetVdInfoListener listener){
         mGetVdInfListener = listener;
     }
+
+    class GetVisitedInfoTask extends AsyncTask<String, Integer, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(String... args) {
+            //根据手机尾号查
+            HttpApi httpApi = new HttpApi();
+            String phone = args[0];
+            return httpApi.GetVisitedInfoByMobile(phone);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                //ui 更新
+            }
+        }
+
+    }
+
+    private void ui_UpdateList(){
+
+    }
+
 }

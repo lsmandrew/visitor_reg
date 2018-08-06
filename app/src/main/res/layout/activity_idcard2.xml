@@ -136,9 +136,9 @@
         android:layout_width="match_parent"
         android:layout_height="100dp">
         <Button
-            android:id="@+id/btn_take_head"
+            android:id="@+id/btn_take_portrait"
             style="@style/table_bottom_btn"
-            android:text="拍摄头像"
+            android:text="拍摄人像"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_width="wrap_content"

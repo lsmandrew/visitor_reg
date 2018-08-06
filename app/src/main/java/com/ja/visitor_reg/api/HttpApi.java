@@ -5,6 +5,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.ja.visitor_reg.json.LOGIN_INFO;
 import com.ja.visitor_reg.json.RESP_MSG;
+import com.ja.visitor_reg.json.RESP_VISITEDINFO;
 
 import java.io.IOException;
 
@@ -166,4 +167,37 @@ public class HttpApi {
        return true;
    }
 
+    /**
+     * GetIntervieweeInfoByMobile
+     * no token
+     * @param strPhone 电话号码
+     * @return RESP_VISITEDINFO
+     */
+   public RESP_VISITEDINFO GetVisitedInfoByMobile(String strPhone){
+       RESP_VISITEDINFO resp_msg = null;
+       try {
+           Response response = null;
+           String strUrl;
+           OkHttpClient client = new OkHttpClient();
+           //ready param
+           strUrl = "http://192.168.11.51:9090/ja-api/api/sysuser/getbymobile?mobile=";
+           strUrl += strPhone;
+           Request request = new Request.Builder()
+                   .url(strUrl)
+                   .header("Accept", "text/html")
+                   .get()
+                   .build();
+           //response
+           response = client.newCall(request).execute();
+           String strBody = response.body().string();
+           Log.d(TAG, "resp: " + strBody);
+           resp_msg  = JSON.parseObject(strBody, RESP_VISITEDINFO.class);
+           Log.d(TAG, "parse msg: " + resp_msg.getMsg());
+           Log.d(TAG, "parse list len: " + resp_msg.getList().size());
+       } catch (IOException e) {
+           e.printStackTrace();
+           return null;
+       }
+       return resp_msg;
+   }
 }

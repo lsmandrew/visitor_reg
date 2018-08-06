@@ -22,6 +22,7 @@ import com.ja.visitor_reg.adapter.CertTypeAdapter;
 import com.ja.visitor_reg.adapter.SexTypeAdapter;
 import com.ja.visitor_reg.adapter.VisitorInInfoAdapter;
 import com.ja.visitor_reg.common.base.BaseFragment;
+import com.ja.visitor_reg.common.util.DateUtil;
 import com.ja.visitor_reg.common.util.IdCardReaderUtil;
 import com.ja.visitor_reg.entity.VisitEventEntity;
 import com.ja.visitor_reg.entity.VisitInfoEntity;
@@ -30,6 +31,7 @@ import com.ja.visitor_reg.model.CertTypeItem;
 import com.ja.visitor_reg.model.SexTypeItem;
 import com.ja.visitor_reg.model.VdInfoItem;
 import com.ja.visitor_reg.model.VisitInInfoItem;
+import com.ja.visitor_reg.task.DBTask;
 import com.ja.visitor_reg.ui.camera.CameraView;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
 import com.orhanobut.logger.Logger;
@@ -40,6 +42,7 @@ import com.parkingwang.keyboard.view.InputView;
 import com.telpo.tps550.api.idcard.IdentityInfo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +69,7 @@ public class VisitorInFragment extends BaseFragment {
     private VisitInfoEntity mVisitInfoEntity;
     private boolean mIsStartCheckIn;
 
+
     @BindView(R.id.sp_cert_type) Spinner mSpCertType;
     @BindView(R.id.sp_sex_type) Spinner mSpSexType;
     @BindView(R.id.sp_cause) Spinner mSpCause;
@@ -73,9 +77,12 @@ public class VisitorInFragment extends BaseFragment {
     @BindView(R.id.btn_newpower_car) Button mBtnNewPower;
     @BindView(R.id.edt_visitor_count) EditText mEdtVisitCount;
     @BindView(R.id.edt_interviewee) EditText mEdtInterviewee;
+    @BindView(R.id.edt_visitor_phone) EditText mEdtVisitPhone;
     @BindView(R.id.edt_be_phone) EditText mEdtBePhone;
     @BindView(R.id.edt_id_code)EditText mEdtIdCode;
     @BindView(R.id.edt_name)EditText mEdtName;
+    @BindView(R.id.edt_visitor_unit)EditText mEdtUnit;
+    @BindView(R.id.edt_goods)EditText mEdtGoods;
     @BindView(R.id.img_head) ImageView mImgHead;
     @BindView(R.id.camera_preview)CameraView mCameraView;
     @BindView(R.id.recycle_view)RecyclerView mRecyVisitIn;
@@ -164,19 +171,9 @@ public class VisitorInFragment extends BaseFragment {
         //recycler
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyVisitIn.setLayoutManager(layoutManager);
-        mVisitInList.add(new VisitInInfoItem("李小萌", "欧阳有爱",
-                "", "", ""));
-        mVisitInList.add(new VisitInInfoItem("嘻嘻嘻", "哈哈哈",
-                "", "", ""));
-        mVisitInList.add(new VisitInInfoItem("急急急", "情悄悄",
-                "", "", ""));
         m_VisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
         mRecyVisitIn.setAdapter(m_VisitInAdapter);
-        //bind
-        //mEdtInterviewee.addTextChangedListener(new onTextWatcher());
-        //mEdtInterviewee.setOnClickListener(new onAllClickListener());
-        //mEdtVisitCount.addTextCangedListener(new onTextWatcher());
-        //mEdtVisitCount.setOnEditorActionListener();
+
     }
 
 
@@ -202,8 +199,8 @@ public class VisitorInFragment extends BaseFragment {
     /**
      * 拍照
      */
-    void take_pic(){
-        mCameraView.doTakePicture();
+    public void take_pic(String picName){
+        mCameraView.doTakePicture(picName);
     }
     /**
      * 点击窗体隐藏键盘
@@ -226,9 +223,9 @@ public class VisitorInFragment extends BaseFragment {
         //query
         //create dialog
         List<VdInfoItem> vdInfoList = new ArrayList<VdInfoItem>();
-        vdInfoList.add(new VdInfoItem("研发部", "李晓明", "11111111111", true));
-        vdInfoList.add(new VdInfoItem("市场调研部", "欧阳优雅", "22222222222", true));
-        vdInfoList.add(new VdInfoItem("软件部", "笑笑笑", "33333333333", true));
+//        vdInfoList.add(new VdInfoItem("研发部", "李晓明", "11111111111", true));
+//        vdInfoList.add(new VdInfoItem("市场调研部", "欧阳优雅", "22222222222", true));
+//        vdInfoList.add(new VdInfoItem("软件部", "笑笑笑", "33333333333", true));
         VdInfoDialog vdInfoDialog = new VdInfoDialog(mContext, vdInfoList);
         vdInfoDialog.setOnGetVdInfoCallBack(new VdInfoDialog.OnGetVdInfoListener(){
 
@@ -253,7 +250,7 @@ public class VisitorInFragment extends BaseFragment {
                     Toast.makeText(mContext, "身份证读取成功", Toast.LENGTH_SHORT).show();
                     //sucess 鸣叫
                     BeepManager beepManager = new BeepManager(getActivity(), R.raw.beep);
-                    beepManager.playBeepSoundAndVibrate();
+                    //beepManager.playBeepSoundAndVibrate();
                     //更新ui
                     ui_UpdateIdInfo(info, bitmapHead);
                 } else {
@@ -270,9 +267,44 @@ public class VisitorInFragment extends BaseFragment {
 
     }
 
-    @OnClick(R.id.btn_take_head)
-    void onClick_TakeHead(View v){
-        take_pic();
+    /**
+     * 拍摄人像
+     * @param v
+     */
+    @OnClick(R.id.btn_take_portrait)
+    void onClick_TakePortrait(View v){
+        String picPath;
+
+        //paht:LIVE_设备名_时间.jpg
+        picPath = mContext.getFilesDir().getPath().toString();//获取file路径
+        picPath += "/LIVE_" + DateUtil.getNowDateTimeFormat() + ".jpg";
+        Logger.d("save path=" + picPath);
+        take_pic(picPath);
+        //save
+        if (null == mVisitInfoEntity){
+            mVisitInfoEntity = new VisitInfoEntity();
+        }
+        mVisitInfoEntity.setImg_portrait(picPath);
+    }
+
+    /**
+     * 拍摄物品
+     * @param v
+     */
+    @OnClick(R.id.btn_take_goods)
+    void onClick_TakeGoods(View v) {
+        String picPath;
+
+        //paht:LIVE_设备名_时间.jpg
+        picPath = mContext.getFilesDir().getPath().toString();//获取file路径
+        picPath += "/Goods_" + DateUtil.getNowDateTimeFormat() + ".jpg";
+        Logger.d("save path=" + picPath);
+        take_pic(picPath);
+        //save
+        if (null == mVisitInfoEntity){
+            mVisitInfoEntity = new VisitInfoEntity();
+        }
+        mVisitInfoEntity.setImg_portrait(picPath);
     }
 
     @OnClick(R.id.btn_start_checkin)
@@ -280,7 +312,6 @@ public class VisitorInFragment extends BaseFragment {
         //title 不可编辑
         //check
         String strCount = mEdtVisitCount.getText().toString();
-
 
         if (null == strCount || 0 == strCount.length()) {
             return ;
@@ -304,12 +335,32 @@ public class VisitorInFragment extends BaseFragment {
     void onClick_Finish(View v) {
         if (!vaild_VisitorInfo()){
             Toast.makeText(mContext, "登记信息有误", Toast.LENGTH_SHORT).show();
+            return;
         }
         //获取信息
-        VisitInfoEntity visitInfoEntity = new VisitInfoEntity();
-        get_VisitorInfo(visitInfoEntity);
-        //show visit info
-        //save db
+        if (null == mVisitInfoEntity){
+            mVisitInfoEntity = new VisitInfoEntity();
+        }
+        get_VisitorInfo(mVisitInfoEntity);
+        DBTask task = DBTask.getInstance();
+        task.start_AddVisitInfoAsync(mVisitInfoEntity, new DBTask.onDBResultListener() {
+            @Override
+            public void onResult(boolean result) {
+                if (result) {
+                    Toast.makeText(mContext, "登记保存成功", Toast.LENGTH_SHORT).show();
+                    //update result show
+                    mVisitInList.add(0, new VisitInInfoItem(mVisitInfoEntity.getVisitor_name(),
+                            mEdtInterviewee.getText().toString(),  mVisitInfoEntity.getBook_phone(),
+                            "", "", ""));
+                    m_VisitInAdapter.notifyItemInserted(0);
+                } else {
+                    Toast.makeText(mContext, "登记保存失败", Toast.LENGTH_SHORT).show();
+                }
+                mVisitInfoEntity = null;
+            }
+        });
+
+
     }
 
     /**
@@ -320,6 +371,7 @@ public class VisitorInFragment extends BaseFragment {
     private boolean vaild_VisitorInfo() {
         String strName = mEdtName.getText().toString();
         String strIdNum = mEdtIdCode.getText().toString();
+        String strPhone = mEdtVisitPhone.getText().toString();
 
         if (null == strName || 0 == strName.length()) {
             return false;
@@ -328,13 +380,53 @@ public class VisitorInFragment extends BaseFragment {
         if (null == strIdNum || 0 == strIdNum.length()) {
             return false;
         }
-        
+
+        if (null == strPhone || 0 == strPhone.length()) {
+            return false;
+        }
+
         return true;
     }
 
     private void get_VisitorInfo(VisitInfoEntity visitEntity) {
 
+        //来访者名字
+        if (null != mEdtName.getText()) {
+            visitEntity.setVisitor_name(mEdtName.getText().toString());
+        }
+        //性别
+        if (null != mSpSexType.getSelectedItem()) {
+            SexTypeItem item = (SexTypeItem) mSpSexType.getSelectedItem();
+            visitEntity.setSex(item.getName());
+        }
+        //证件号码
+        if (null != mEdtIdCode.getText()) {
+            visitEntity.setId_numer(mEdtIdCode.getText().toString());
+        }
+        //事由
+        if (null != mEventEntity) {
+            visitEntity.setVisit_event_id(mEventEntity.getId());
+        }
+        //来访电话
+        if (null != mEdtVisitPhone.getText()) {
+            visitEntity.setBook_phone(mEdtVisitPhone.getText().toString());
+        }
+        //部门
+        if (null != mEdtUnit.getText()) {
+            visitEntity.setDeparment(mEdtUnit.getText().toString());
+        }
+        //携带物品
+        if (null != mEdtGoods.getText()){
+            visitEntity.setGoods(mEdtGoods.getText().toString());
+        }
+        //车牌
+        visitEntity.setCar_plate(mIvCar.getNumber());
+        //头像图片
+
+        //人像照片
+
+        //来访时间
+        visitEntity.setIn_time(new Date());
     }
-    
-    
+
 }

@@ -3,15 +3,16 @@ package com.ja.visitor_reg.model;
 public class VisitInInfoItem {
     private String visitName;
     private String visitedName;
+    private String visitPhone;
     private String imgHeadName;
     private String imgPortraitName;
     private String imgGoodsName;
 
-    public VisitInInfoItem(String visitName, String visitedName,
-                           String imgHeadName, String imgPortraitName,
-                           String imgGoodsName) {
+    public VisitInInfoItem(String visitName, String visitedName, String visitPhone, String imgHeadName,
+                           String imgPortraitName, String imgGoodsName) {
         this.visitName = visitName;
         this.visitedName = visitedName;
+        this.visitPhone = visitPhone;
         this.imgHeadName = imgHeadName;
         this.imgPortraitName = imgPortraitName;
         this.imgGoodsName = imgGoodsName;

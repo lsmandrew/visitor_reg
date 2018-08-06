@@ -19,4 +19,12 @@ public class LOGIN_INFO {
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public String toString() {
+        return "LOGIN_INFO{" +
+                "deviceName='" + deviceName + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
