@@ -17,6 +17,7 @@
             android:text="请输入被访问者手机尾号"/>
 
         <EditText
+            android:id="@+id/edt_vdinfo_mobile"
             android:layout_marginLeft="30dp"
             android:singleLine="true"
             android:layout_width="120dp"

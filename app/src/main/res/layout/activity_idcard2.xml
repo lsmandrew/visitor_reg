@@ -111,7 +111,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="预约电话"
+                android:text="來訪电话"
                 android:textSize="26sp"
                 android:gravity="center_horizontal"
                 android:layout_weight="1"

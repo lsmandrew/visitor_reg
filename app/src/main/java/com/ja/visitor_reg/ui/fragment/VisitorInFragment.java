@@ -3,6 +3,7 @@ package com.ja.visitor_reg.ui.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +60,7 @@ public class VisitorInFragment extends BaseFragment {
     private CertTypeAdapter mCertAdapter;
     private SexTypeAdapter  mSexAdapter;
     private CauseAdapter    mCauseAdapter;
-    private VisitorInInfoAdapter m_VisitInAdapter;
+    private VisitorInInfoAdapter mVisitInAdapter;
     private List<CertTypeItem>  mCertTypeList = new ArrayList<CertTypeItem>();
     private List<SexTypeItem>  mSexTypeList = new ArrayList<SexTypeItem>();
     private List<CauseTypeItem> mCauseTypeList = new ArrayList<CauseTypeItem>();
@@ -171,8 +172,8 @@ public class VisitorInFragment extends BaseFragment {
         //recycler
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyVisitIn.setLayoutManager(layoutManager);
-        m_VisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
-        mRecyVisitIn.setAdapter(m_VisitInAdapter);
+        mVisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
+        mRecyVisitIn.setAdapter(mVisitInAdapter);
 
     }
 
@@ -224,8 +225,6 @@ public class VisitorInFragment extends BaseFragment {
         //create dialog
         List<VdInfoItem> vdInfoList = new ArrayList<VdInfoItem>();
 //        vdInfoList.add(new VdInfoItem("研发部", "李晓明", "11111111111", true));
-//        vdInfoList.add(new VdInfoItem("市场调研部", "欧阳优雅", "22222222222", true));
-//        vdInfoList.add(new VdInfoItem("软件部", "笑笑笑", "33333333333", true));
         VdInfoDialog vdInfoDialog = new VdInfoDialog(mContext, vdInfoList);
         vdInfoDialog.setOnGetVdInfoCallBack(new VdInfoDialog.OnGetVdInfoListener(){
 
@@ -233,6 +232,10 @@ public class VisitorInFragment extends BaseFragment {
             public void getVdInfo(VdInfoItem vdInfoItem) {
                 mEdtInterviewee.setText(vdInfoItem.getName());
                 mEdtBePhone.setText(vdInfoItem.getWorkPhone());
+                if (null == mEventEntity){
+                    mEventEntity = new VisitEventEntity();
+                }
+                mEventEntity.setIntervieweeId(vdInfoItem.getId());//被訪者id
             }
         });
         vdInfoDialog.show();
@@ -319,8 +322,23 @@ public class VisitorInFragment extends BaseFragment {
         //save 来访事件data
         if (!mIsStartCheckIn) {
             mBtnStartCheckIn.setText("重新登记");
-            mEventEntity = new VisitEventEntity();
+            if (null == mEventEntity) {
+                mEventEntity = new VisitEventEntity();
+            }
             mEventEntity.setVisitorCount(Integer.parseInt(strCount));
+            //sava db
+            DBTask task = DBTask.getInstance();
+            task.start_AddVisitEventAsync(mEventEntity, new DBTask.onDBResultListener() {
+
+                @Override
+                public void onAddResult(boolean result, long id) {
+                    if (result) {
+                        Logger.d("save id=" + id);
+                        mEventEntity.setId(id);
+                    }
+                }
+            });
+
         }else {
             mBtnStartCheckIn.setText("开始登记");
         }
@@ -345,22 +363,61 @@ public class VisitorInFragment extends BaseFragment {
         DBTask task = DBTask.getInstance();
         task.start_AddVisitInfoAsync(mVisitInfoEntity, new DBTask.onDBResultListener() {
             @Override
-            public void onResult(boolean result) {
+            public void onAddResult(boolean result, long id) {
                 if (result) {
                     Toast.makeText(mContext, "登记保存成功", Toast.LENGTH_SHORT).show();
                     //update result show
                     mVisitInList.add(0, new VisitInInfoItem(mVisitInfoEntity.getVisitor_name(),
                             mEdtInterviewee.getText().toString(),  mVisitInfoEntity.getBook_phone(),
                             "", "", ""));
-                    m_VisitInAdapter.notifyItemInserted(0);
+                    mVisitInAdapter.notifyItemInserted(0);
+
                 } else {
                     Toast.makeText(mContext, "登记保存失败", Toast.LENGTH_SHORT).show();
                 }
-                mVisitInfoEntity = null;
+                //clear
+                ui_ClearData();
+
             }
         });
 
 
+    }
+
+    private void ui_ClearVisitEvent() {
+        mEdtVisitCount.setText("");
+        mEdtBePhone.setText("");
+        mEdtInterviewee.setText("");
+        mEdtBePhone.setText("");
+        mBtnStartCheckIn.setText("開始登記");
+        mIsStartCheckIn = false;
+
+    }
+    private void ui_ClearData() {
+
+        mEdtIdCode.setText("");
+        mEdtName.setText("");
+        mEdtVisitPhone.setText("");
+        mEdtUnit.setText("");
+        mEdtGoods.setText("");
+        mIvCar.updateNumber("");
+        mImgHead.setImageBitmap(null);
+
+        mEventEntity.setVisitorCount(mEventEntity.getVisitorCount()-1);
+        if(0 == mEventEntity.getVisitorCount()){
+            //clear visitinfo list
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVisitInList.clear();
+                    mVisitInAdapter.notifyDataSetChanged();
+                    ui_ClearVisitEvent();
+                }
+            }, 2000);
+
+        }
+        mVisitInfoEntity = null;
     }
 
     /**
@@ -385,11 +442,16 @@ public class VisitorInFragment extends BaseFragment {
             return false;
         }
 
+        if (!mIsStartCheckIn){
+            return false;
+        }
         return true;
     }
 
     private void get_VisitorInfo(VisitInfoEntity visitEntity) {
 
+        //來訪事件
+        visitEntity.setVisit_event_id(mEventEntity.getId());
         //来访者名字
         if (null != mEdtName.getText()) {
             visitEntity.setVisitor_name(mEdtName.getText().toString());
@@ -427,6 +489,7 @@ public class VisitorInFragment extends BaseFragment {
 
         //来访时间
         visitEntity.setIn_time(new Date());
+
     }
 
 }

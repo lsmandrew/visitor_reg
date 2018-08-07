@@ -58,11 +58,20 @@ public class VisitInInfoItem {
         this.imgGoodsName = imgGoodsName;
     }
 
+    public String getVisitPhone() {
+        return visitPhone;
+    }
+
+    public void setVisitPhone(String visitPhone) {
+        this.visitPhone = visitPhone;
+    }
+
     @Override
     public String toString() {
         return "VisitInInfoItem{" +
                 "visitName='" + visitName + '\'' +
                 ", visitedName='" + visitedName + '\'' +
+                ", visitPhone='" + visitPhone + '\'' +
                 ", imgHeadName='" + imgHeadName + '\'' +
                 ", imgPortraitName='" + imgPortraitName + '\'' +
                 ", imgGoodsName='" + imgGoodsName + '\'' +

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.adapter.VdInfoAdapter;
 import com.ja.visitor_reg.api.HttpApi;
+import com.ja.visitor_reg.json.RESP_VISITEDINFO;
 import com.ja.visitor_reg.model.VdInfoItem;
 import com.orhanobut.logger.Logger;
 
@@ -39,6 +40,8 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
         //find
         mListView = mView.findViewById(R.id.lv_vd_info);
         mBtnSearch = mView.findViewById(R.id.btn_vdinfo_search);
+        mEdtPhone = mView.findViewById(R.id.edt_vdinfo_mobile);
+        //listener
         mBtnSearch.setOnClickListener(this);
         //list
         mVdInfoList = list;
@@ -118,12 +121,19 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
 
     class GetVisitedInfoTask extends AsyncTask<String, Integer, Boolean>{
 
+        RESP_VISITEDINFO mVisifInfo;
+
         @Override
         protected Boolean doInBackground(String... args) {
             //根据手机尾号查
             HttpApi httpApi = new HttpApi();
             String phone = args[0];
-            return httpApi.GetVisitedInfoByMobile(phone);
+            mVisifInfo = httpApi.GetVisitedInfoByMobile(phone);
+            if (null != mVisifInfo) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
@@ -131,13 +141,28 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
             super.onPostExecute(result);
             if (result) {
                 //ui 更新
+                ui_UpdateList(mVisifInfo);
             }
         }
 
     }
 
-    private void ui_UpdateList(){
-
+    private void ui_UpdateList(RESP_VISITEDINFO visitedinfo){
+        if (null != visitedinfo){
+            for (RESP_VISITEDINFO.ListItem item : visitedinfo.getList()){
+                VdInfoItem vdInfoItem = new VdInfoItem();
+                vdInfoItem.setName(item.getRealName());
+                vdInfoItem.setWorkPhone(item.getMobile());
+                vdInfoItem.setId(item.getUserId());
+                if (1 == item.getStatus()){
+                    vdInfoItem.setAgree(true);
+                }else {
+                    vdInfoItem.setAgree(false);
+                }
+                mVdInfoList.add(vdInfoItem);
+            }
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
 }

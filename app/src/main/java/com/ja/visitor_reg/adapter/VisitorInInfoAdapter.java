@@ -32,7 +32,7 @@ public class VisitorInInfoAdapter extends RecyclerView.Adapter<VisitorInInfoAdap
             mView = view;
             mVisitName = view.findViewById(R.id.tv_visitin_name);
             mVisitedName = view.findViewById(R.id.tv_visitin_visited);
-            mBookPhone = view.findViewById(R.id.tv_visitin_bookphone);
+            mBookPhone = view.findViewById(R.id.tv_visitin_phone);
 //            mImgeHead = itemView.findViewById(R.id.img_visitin_head);
 //            mImgePortrait = itemView.findViewById(R.id.img_visitin_portrait);
 //            mVisitedName = itemView.findViewById(R.id.img_visitin_goods);
@@ -69,6 +69,7 @@ public class VisitorInInfoAdapter extends RecyclerView.Adapter<VisitorInInfoAdap
         holder.mBookPhone.setTextSize(25);
         holder.mVisitName.setText(item.getVisitName());
         holder.mVisitedName.setText(item.getVisitedName());
+        holder.mBookPhone.setText(item.getVisitPhone());
 
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.ja.visitor_reg.config.GlobalConfig;
 import com.ja.visitor_reg.greendao.DaoMaster;
 import com.ja.visitor_reg.greendao.DaoMaster.DevOpenHelper;
 import com.ja.visitor_reg.greendao.DaoSession;
@@ -43,8 +44,8 @@ public class ApplicationUtil extends Application {
 
         mContent = getApplicationContext();
         //init greendao
-        DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? "notes-db-encrypted" : "notes-db");
-        Database db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
+        DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? GlobalConfig.DB_NAME : "visitor_reg.db");
+        Database db = ENCRYPTED ? helper.getEncryptedWritableDb(GlobalConfig.DB_PWD) : helper.getWritableDb();
         mDaoSession = new DaoMaster(db).newSession();
         ////use Loger init////
         Logger.addLogAdapter(new AndroidLogAdapter() {
