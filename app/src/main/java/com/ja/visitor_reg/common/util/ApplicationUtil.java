@@ -55,6 +55,8 @@ public class ApplicationUtil extends Application {
             }
         });
         Logger.d("onCreate");
+        ////configure file////
+        Init_Configure();
     }
 
     /**
@@ -94,6 +96,34 @@ public class ApplicationUtil extends Application {
             mInstance = new ApplicationUtil();
         }
         return mInstance;
+    }
+
+    /**
+     * 初始化配置文件
+     */
+    void Init_Configure(){
+        SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
+        String devName = (String) sp.get("devName", "");
+        if (StringUtil.isEmptyTrimed(devName)) {
+            devName = GlobalConfig.DEFAULT_DEV_NAME;
+            sp.put("devName", devName);
+        }
+        String devPwd = (String) sp.get("devPwd", "");
+        if (StringUtil.isEmptyTrimed(devPwd)) {
+            devPwd = GlobalConfig.DEFAULT_DEV_PWD;
+            sp.put("devPwd", devPwd);
+        }
+        String serIp = (String) sp.get("serIp", "");
+        if (StringUtil.isEmptyTrimed(serIp)) {
+            serIp = "192.168.11.51";
+            sp.put("serIp", serIp);
+        }
+        int serPort = (int) sp.get("serPort", -1);
+        if (-1 == serPort) {
+            serPort = 9090;
+            sp.put("serPort", serPort);
+        }
+
     }
 
 }

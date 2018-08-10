@@ -97,6 +97,8 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
             case R.id.btn_vdinfo_search:
                 Logger.d("search");
                 String phone = mEdtPhone.getText().toString();
+                mVdInfoList.clear();
+                mAdapter.notifyDataSetChanged();
                 new GetVisitedInfoTask().execute(phone);
                 break;
         }
@@ -128,7 +130,7 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
             //根据手机尾号查
             HttpApi httpApi = new HttpApi();
             String phone = args[0];
-            mVisifInfo = httpApi.GetVisitedInfoByMobile(phone);
+            mVisifInfo = httpApi.getVDInfoByMobile_Request(phone, 2);
             if (null != mVisifInfo) {
                 return true;
             } else {
@@ -153,6 +155,8 @@ public class VdInfoDialog implements View.OnClickListener, AdapterView.OnItemCli
                 VdInfoItem vdInfoItem = new VdInfoItem();
                 vdInfoItem.setName(item.getRealName());
                 vdInfoItem.setWorkPhone(item.getMobile());
+                vdInfoItem.setDepartment(item.getDepName());
+                vdInfoItem.setDeparmentId(item.getDeptId());
                 vdInfoItem.setId(item.getUserId());
                 if (1 == item.getStatus()){
                     vdInfoItem.setAgree(true);

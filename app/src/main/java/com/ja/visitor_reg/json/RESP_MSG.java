@@ -1,5 +1,8 @@
 package com.ja.visitor_reg.json;
 
+/**
+ * 信息回复
+ */
 public class RESP_MSG {
     private String msg;
     private Long code;

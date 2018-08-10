@@ -7,15 +7,24 @@ public class VisitInInfoItem {
     private String imgHeadName;
     private String imgPortraitName;
     private String imgGoodsName;
+    private String visitTime;
 
     public VisitInInfoItem(String visitName, String visitedName, String visitPhone, String imgHeadName,
-                           String imgPortraitName, String imgGoodsName) {
+                           String imgPortraitName, String imgGoodsName, String visitTime) {
         this.visitName = visitName;
         this.visitedName = visitedName;
         this.visitPhone = visitPhone;
         this.imgHeadName = imgHeadName;
         this.imgPortraitName = imgPortraitName;
         this.imgGoodsName = imgGoodsName;
+        this.visitTime = visitTime;
+    }
+
+    public VisitInInfoItem(String visitName, String visitedName, String visitPhone, String visitTime) {
+        this.visitName = visitName;
+        this.visitedName = visitedName;
+        this.visitPhone = visitPhone;
+        this.visitTime = visitTime;
     }
 
     public String getVisitName() {
@@ -66,6 +75,14 @@ public class VisitInInfoItem {
         this.visitPhone = visitPhone;
     }
 
+    public String getVisitTime() {
+        return visitTime;
+    }
+
+    public void setVisitTime(String visitTime) {
+        this.visitTime = visitTime;
+    }
+
     @Override
     public String toString() {
         return "VisitInInfoItem{" +
@@ -75,6 +92,7 @@ public class VisitInInfoItem {
                 ", imgHeadName='" + imgHeadName + '\'' +
                 ", imgPortraitName='" + imgPortraitName + '\'' +
                 ", imgGoodsName='" + imgGoodsName + '\'' +
+                ", visitTime='" + visitTime + '\'' +
                 '}';
     }
 }

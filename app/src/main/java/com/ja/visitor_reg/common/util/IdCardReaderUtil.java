@@ -79,12 +79,13 @@ public class IdCardReaderUtil {
             TelpoException result = null;
             if (isUsbMount(activities[0])) {
                 try {
-                    IdCard.close();
+                    //IdCard.close();
                     IdCard.open(IdCard.IDREADER_TYPE_USB, activities[0]);
                     mIdinfo = IdCard.checkIdCard(CHECK_TIMEOUT);
                     if(null != mIdinfo){
                         mBitmapHead = IdCard.decodeIdCardImage(mIdinfo.getHead_photo());
                     }
+                    IdCard.close();
                 } catch (TelpoException e) {
                     e.printStackTrace();
                     result = e;
@@ -106,6 +107,8 @@ public class IdCardReaderUtil {
                 mReadIDListener.onReadIDCardInfo(mIdinfo, mBitmapHead);
             }
         }
+
+
     }
 
     /**

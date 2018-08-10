@@ -9,8 +9,10 @@ import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.ja.visitor_reg.common.util.BitmapUtil;
+import com.ja.visitor_reg.config.GlobalConfig;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -25,7 +27,8 @@ public class CameraView extends SurfaceView {
     private Point mPicSize; //图片尺寸
     private boolean mIsPreview = false;
     private int mCameraType = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private String mPhotoPath = null;
+    private String mPhotoPath = null;//路径
+    private String mPhotoName = null;//文件名
 
     public CameraView(Context context) {
         this(context, null);
@@ -35,8 +38,8 @@ public class CameraView extends SurfaceView {
         super(context, attrs);
         this.mContext = context;
 
-        mPreviewSize = new Point(640,480);
-        mPicSize = new Point(640,480);
+        mPreviewSize = new Point(GlobalConfig.PREVIEW_WIDTH, GlobalConfig.PREVIEW_HEIGHT);
+        mPicSize = new Point(GlobalConfig.PIC_WIDTH, GlobalConfig.PIC_HEIGHT);
         // 获取表面视图的表面持有者
         mHolder = getHolder();
         // 给表面持有者添加表面变更监听器
@@ -57,31 +60,41 @@ public class CameraView extends SurfaceView {
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 //            Logger.i("SurfaceChangeed");
             try {
-                mCamera.stopPreview();
-                mCamera.setPreviewDisplay(mHolder);
-                mCamera.startPreview();
+                if (null != mCamera) {
+                    mCamera.stopPreview();
+                    mCamera.setPreviewDisplay(mHolder);
+                    mCamera.startPreview();
+                }
             } catch (Exception e) {
-                Logger.e( "surfaceChanged: " + e.getMessage());
+                Logger.e("surfaceChanged: " + e.getMessage());
             }
         }
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
             Logger.i("surfaceDestroyed");
-            // 将预览监听器置空
-            mCamera.setPreviewCallback(null);
-            // 停止预览画面
-            mCamera.stopPreview();
-            // 释放相机资源
-            mCamera.release();
-            mCamera = null;
+            if (null != mCamera) {
+                // 将预览监听器置空
+                mCamera.setPreviewCallback(null);
+                // 停止预览画面
+                mCamera.stopPreview();
+                // 释放相机资源
+                mCamera.release();
+                mCamera = null;
+            }
         }
     };
 
     private void init_camera() {
         // 打开摄像头
         if (null == mCamera) {
-            mCamera = Camera.open(mCameraType);
+            try {
+                mCamera = Camera.open(mCameraType);
+            }catch ( Exception e) {
+                e.printStackTrace();
+                Toast.makeText(mContext, "摄像头异常", Toast.LENGTH_SHORT);
+            }
+
         }
         if (null != mCamera) {
 
@@ -139,8 +152,10 @@ public class CameraView extends SurfaceView {
 
     // 下面是单拍的代码
     // 执行拍照动作。外部调用该方法完成拍照
-    public void doTakePicture(String picName) {
-        mPhotoPath = picName;
+    public void doTakePicture(String picPath, String picName) {
+        mPhotoPath = picPath;
+        mPhotoName = picName;
+
         if (mIsPreview && mCamera != null) {
             // 命令相机拍摄一张照片
             mCamera.takePicture(mShutterCallback, null, mPictureCallback);
@@ -167,10 +182,12 @@ public class CameraView extends SurfaceView {
             Bitmap bitmap = BitmapUtil.getRotateBitmap(raw,
                     (mCameraType == Camera.CameraInfo.CAMERA_FACING_BACK) ? 90 : -90);
             // 保存照片文件
-            if (null != mPhotoPath) {
-                BitmapUtil.saveBitmap(mPhotoPath, bitmap, "jpg", 80);
+            if (null != mPhotoPath && null != mPhotoName) {
+                StringBuilder pathBuilder = new StringBuilder(mPhotoPath)
+                                            .append(mPhotoName);
+                BitmapUtil.saveBitmap(pathBuilder.toString(), bitmap, "jpg", 80);
+                Logger.d("bitmap.size=" + (bitmap.getByteCount() / 1024) + "K" + ", path=" + pathBuilder.toString());
             }
-            Logger.d("bitmap.size=" + (bitmap.getByteCount() / 1024) + "K" + ", path=" + mPhotoPath);
             // 再次进入预览画面
             mCamera.startPreview();
             mIsPreview = true;

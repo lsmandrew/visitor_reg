@@ -16,14 +16,14 @@ import java.util.Date;
  * indexes：定义索引，可以跨越多个列
  * createInDb：标记创建数据库表
  * 2.基础属性注解
+ *
  * @Id :主键 Long型，可以通过@Id(autoincrement = true)设置自增长
  * @Property：设置一个非默认关系映射所对应的列名，默认是的使用字段名 举例：@Property (nameInDb="name")
  * @NotNul：设置数据库表当前列不能为空
  * @Transient ：添加次标记之后不会生成数据库表的列
  * 3.索引注解
  * @Index：使用@Index作为一个属性来创建一个索引，通过name设置索引别名，也可以通过unique给索引添加约束
- * @Unique：向数据库列添加了一个唯一的约束
- * 4.关系注解
+ * @Unique：向数据库列添加了一个唯一的约束 4.关系注解
  * @ToOne：定义与另一个实体（一个实体对象）的关系
  * @ToMany：定义与多个实体对象的关系
  */
@@ -65,18 +65,23 @@ public class VisitInfoEntity {
     private String car_plate;//车牌
     private String img_head;//头像(图片名)
     private String img_portrait;//人像(图片名)
+    private String img_cert;//证件照片(图片名)
     private String img_goods;//携带物品(图片名)
+    private String icNumber;//ic卡号(二维码为虚拟ic卡：ic-4byte后面补零 QR-5byte后面补零)
+    private String physicsNumber;//二代证物理卡号(8byte16位)
     private Date in_time;//登记时间
     private Date out_time;//签退时间
     private String system_id;//记录标识
     private Integer is_upload_in;//登记是否上传(0未,1已)
     private Integer is_upload_out;//退出是否上传(0未,1已)
 
-    @Generated(hash = 2122041397)
-    public VisitInfoEntity(Long id, String visitor_name, Long visit_event_id, String id_numer, String sex,
-            String book_phone, String deparment, String goods, String car_plate, String img_head,
-            String img_portrait, String img_goods, Date in_time, Date out_time, String system_id,
-            Integer is_upload_in, Integer is_upload_out) {
+    @Generated(hash = 768262831)
+    public VisitInfoEntity(Long id, String visitor_name, Long visit_event_id,
+                           String id_numer, String sex, String book_phone, String deparment,
+                           String goods, String car_plate, String img_head, String img_portrait,
+                           String img_cert, String img_goods, String icNumber,
+                           String physicsNumber, Date in_time, Date out_time, String system_id,
+                           Integer is_upload_in, Integer is_upload_out) {
         this.id = id;
         this.visitor_name = visitor_name;
         this.visit_event_id = visit_event_id;
@@ -88,7 +93,10 @@ public class VisitInfoEntity {
         this.car_plate = car_plate;
         this.img_head = img_head;
         this.img_portrait = img_portrait;
+        this.img_cert = img_cert;
         this.img_goods = img_goods;
+        this.icNumber = icNumber;
+        this.physicsNumber = physicsNumber;
         this.in_time = in_time;
         this.out_time = out_time;
         this.system_id = system_id;
@@ -98,6 +106,32 @@ public class VisitInfoEntity {
 
     @Generated(hash = 1676749005)
     public VisitInfoEntity() {
+    }
+
+    @Override
+    public String toString() {
+        return "VisitInfoEntity{" +
+                "id=" + id +
+                ", visitor_name='" + visitor_name + '\'' +
+                ", visit_event_id=" + visit_event_id +
+                ", id_numer='" + id_numer + '\'' +
+                ", sex='" + sex + '\'' +
+                ", book_phone='" + book_phone + '\'' +
+                ", deparment='" + deparment + '\'' +
+                ", goods='" + goods + '\'' +
+                ", car_plate='" + car_plate + '\'' +
+                ", img_head='" + img_head + '\'' +
+                ", img_portrait='" + img_portrait + '\'' +
+                ", img_cert='" + img_cert + '\'' +
+                ", img_goods='" + img_goods + '\'' +
+                ", icNumber='" + icNumber + '\'' +
+                ", physicsNumber='" + physicsNumber + '\'' +
+                ", in_time=" + in_time +
+                ", out_time=" + out_time +
+                ", system_id='" + system_id + '\'' +
+                ", is_upload_in=" + is_upload_in +
+                ", is_upload_out=" + is_upload_out +
+                '}';
     }
 
     public Long getId() {
@@ -164,6 +198,14 @@ public class VisitInfoEntity {
         this.goods = goods;
     }
 
+    public String getCar_plate() {
+        return this.car_plate;
+    }
+
+    public void setCar_plate(String car_plate) {
+        this.car_plate = car_plate;
+    }
+
     public String getImg_head() {
         return this.img_head;
     }
@@ -180,12 +222,36 @@ public class VisitInfoEntity {
         this.img_portrait = img_portrait;
     }
 
+    public String getImg_cert() {
+        return this.img_cert;
+    }
+
+    public void setImg_cert(String img_cert) {
+        this.img_cert = img_cert;
+    }
+
     public String getImg_goods() {
         return this.img_goods;
     }
 
     public void setImg_goods(String img_goods) {
         this.img_goods = img_goods;
+    }
+
+    public String getIcNumber() {
+        return this.icNumber;
+    }
+
+    public void setIcNumber(String icNumber) {
+        this.icNumber = icNumber;
+    }
+
+    public String getPhysicsNumber() {
+        return this.physicsNumber;
+    }
+
+    public void setPhysicsNumber(String physicsNumber) {
+        this.physicsNumber = physicsNumber;
     }
 
     public Date getIn_time() {
@@ -228,33 +294,4 @@ public class VisitInfoEntity {
         this.is_upload_out = is_upload_out;
     }
 
-    @Override
-    public String toString() {
-        return "VisitInfoEntity{" +
-                "id=" + id +
-                ", visitor_name='" + visitor_name + '\'' +
-                ", visit_event_id=" + visit_event_id +
-                ", id_numer='" + id_numer + '\'' +
-                ", sex='" + sex + '\'' +
-                ", book_phone='" + book_phone + '\'' +
-                ", deparment='" + deparment + '\'' +
-                ", goods='" + goods + '\'' +
-                ", img_head='" + img_head + '\'' +
-                ", img_portrait='" + img_portrait + '\'' +
-                ", img_goods='" + img_goods + '\'' +
-                ", in_time=" + in_time +
-                ", out_time=" + out_time +
-                ", system_id='" + system_id + '\'' +
-                ", is_upload_in=" + is_upload_in +
-                ", is_upload_out=" + is_upload_out +
-                '}';
-    }
-
-    public String getCar_plate() {
-        return this.car_plate;
-    }
-
-    public void setCar_plate(String car_plate) {
-        this.car_plate = car_plate;
-    }
 }

@@ -2,12 +2,31 @@ package com.ja.visitor_reg.json;
 
 import java.util.List;
 
+/**
+ * 被访者信息回复
+ * ======================================
+ * "list":
+ * [{"createTime":"2016-11-11 11:11:11",
+ * "depName":"曇京
+ * "deptId":1,
+ * "email":"root@iots.io",
+ * "mobile":"13612345678",
+ * "officePhone":"811",
+ * "password":"e1153123d7d180ceeb820d577ff119876678732a68eef4e6ffc0b1f06a01f91b",
+ * "realName":"任盈盈",
+ * "salt":"YzcmCZNvbXocrsz9dm8e",
+ * "status":1,
+ * "userId":1,
+ * "username":"admin","workerNum":"M20180101"}]}
+ * ==============================================
+ */
 public class RESP_VISITEDINFO {
     private String msg;//结果
     private Long code;
     private List<ListItem> list;
     public class ListItem {
         private String createTime;
+        private String depName;
         private Long deptId;
         private String email;
         private String mobile;
@@ -19,6 +38,14 @@ public class RESP_VISITEDINFO {
         private Long userId;
         private String username;
         private String workerNum;
+
+        public String getDepName() {
+            return depName;
+        }
+
+        public void setDepName(String depName) {
+            this.depName = depName;
+        }
 
         public String getCreateTime() {
             return createTime;
@@ -141,18 +168,5 @@ public class RESP_VISITEDINFO {
         this.list = list;
     }
 
-    /**
-     * "list":
-     * [{"createTime":"2016-11-11 11:11:11",
-     * "deptId":1,
-     * "email":"root@iots.io",
-     * "mobile":"13612345678",
-     * "officePhone":"811",
-     * "password":"e1153123d7d180ceeb820d577ff119876678732a68eef4e6ffc0b1f06a01f91b",
-     * "realName":"任盈盈",
-     * "salt":"YzcmCZNvbXocrsz9dm8e",
-     * "status":1,
-     * "userId":1,
-     * "username":"admin","workerNum":"M20180101"}]}
-     */
+
 }

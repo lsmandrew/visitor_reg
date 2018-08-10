@@ -1,5 +1,8 @@
 package com.ja.visitor_reg.json;
 
+/**
+ * 登陆信息
+ */
 public class LOGIN_INFO {
     private  String deviceName;
     private  String password;

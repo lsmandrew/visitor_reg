@@ -2,6 +2,7 @@ package com.ja.visitor_reg.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -22,11 +24,19 @@ import com.ja.visitor_reg.adapter.CauseAdapter;
 import com.ja.visitor_reg.adapter.CertTypeAdapter;
 import com.ja.visitor_reg.adapter.SexTypeAdapter;
 import com.ja.visitor_reg.adapter.VisitorInInfoAdapter;
+import com.ja.visitor_reg.api.HttpApi;
 import com.ja.visitor_reg.common.base.BaseFragment;
+import com.ja.visitor_reg.common.util.BitmapUtil;
 import com.ja.visitor_reg.common.util.DateUtil;
 import com.ja.visitor_reg.common.util.IdCardReaderUtil;
+import com.ja.visitor_reg.common.util.QRUtil;
+import com.ja.visitor_reg.common.util.SharedPreferencesUtil;
+import com.ja.visitor_reg.common.util.StringUtil;
+import com.ja.visitor_reg.config.GlobalConfig;
 import com.ja.visitor_reg.entity.VisitEventEntity;
 import com.ja.visitor_reg.entity.VisitInfoEntity;
+import com.ja.visitor_reg.json.AUTHOR_CARD;
+import com.ja.visitor_reg.json.RESP_DICT;
 import com.ja.visitor_reg.model.CauseTypeItem;
 import com.ja.visitor_reg.model.CertTypeItem;
 import com.ja.visitor_reg.model.SexTypeItem;
@@ -58,42 +68,43 @@ import butterknife.OnClick;
 public class VisitorInFragment extends BaseFragment {
 
     private CertTypeAdapter mCertAdapter;
-    private SexTypeAdapter  mSexAdapter;
-    private CauseAdapter    mCauseAdapter;
+    private SexTypeAdapter mSexAdapter;
+    private CauseAdapter mCauseAdapter;
     private VisitorInInfoAdapter mVisitInAdapter;
-    private List<CertTypeItem>  mCertTypeList = new ArrayList<CertTypeItem>();
-    private List<SexTypeItem>  mSexTypeList = new ArrayList<SexTypeItem>();
+    private List<CertTypeItem> mCertTypeList = new ArrayList<CertTypeItem>();
+    private List<SexTypeItem> mSexTypeList = new ArrayList<SexTypeItem>();
     private List<CauseTypeItem> mCauseTypeList = new ArrayList<CauseTypeItem>();
     private List<VisitInInfoItem> mVisitInList = new ArrayList<VisitInInfoItem>();
     private PopupKeyboard mPopupKeyboard;
-    private VisitEventEntity mEventEntity;
-    private VisitInfoEntity mVisitInfoEntity;
     private boolean mIsStartCheckIn;
+    private static VisitEventEntity mEventEntity;
+    private static VisitInfoEntity mVisitInfoEntity;
 
 
     @BindView(R.id.sp_cert_type) Spinner mSpCertType;
     @BindView(R.id.sp_sex_type) Spinner mSpSexType;
     @BindView(R.id.sp_cause) Spinner mSpCause;
-    @BindView(R.id.input_view_car)  InputView mIvCar;
+    @BindView(R.id.input_view_car) InputView mIvCar;
     @BindView(R.id.btn_newpower_car) Button mBtnNewPower;
     @BindView(R.id.edt_visitor_count) EditText mEdtVisitCount;
     @BindView(R.id.edt_interviewee) EditText mEdtInterviewee;
     @BindView(R.id.edt_visitor_phone) EditText mEdtVisitPhone;
     @BindView(R.id.edt_be_phone) EditText mEdtBePhone;
-    @BindView(R.id.edt_id_code)EditText mEdtIdCode;
-    @BindView(R.id.edt_name)EditText mEdtName;
-    @BindView(R.id.edt_visitor_unit)EditText mEdtUnit;
-    @BindView(R.id.edt_goods)EditText mEdtGoods;
+    @BindView(R.id.edt_id_code) EditText mEdtIdCode;
+    @BindView(R.id.edt_name) EditText mEdtName;
+    @BindView(R.id.edt_visitor_unit) EditText mEdtUnit;
+    @BindView(R.id.edt_goods) EditText mEdtGoods;
     @BindView(R.id.img_head) ImageView mImgHead;
-    @BindView(R.id.camera_preview)CameraView mCameraView;
-    @BindView(R.id.recycle_view)RecyclerView mRecyVisitIn;
-    @BindView(R.id.btn_start_checkin)Button mBtnStartCheckIn;
+    @BindView(R.id.camera_preview) CameraView mCameraView;
+    @BindView(R.id.recycle_view) RecyclerView mRecyVisitIn;
+    @BindView(R.id.btn_start_checkin) Button mBtnStartCheckIn;
+    @BindView(R.id.edt_book_phone)EditText mEdtBookPhone;
+    @BindView(R.id.cb_isbook)CheckBox mCBIsBook;
 
     @Override
     protected View initView() {
-        View view = View.inflate(mContext, R.layout.activity_idcard2, null);
+        View view = View.inflate(mContext, R.layout.fragment_visit_in, null);
         ButterKnife.bind(this, view);
-        //view.setOnClickListener(this);
 
         return view;
     }
@@ -101,6 +112,13 @@ public class VisitorInFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (null == mEventEntity) {
+            mEventEntity = new VisitEventEntity();
+        }
+        if (null == mVisitInfoEntity) {
+            mVisitInfoEntity = new VisitInfoEntity();
+        }
 
     }
 
@@ -135,7 +153,7 @@ public class VisitorInFragment extends BaseFragment {
             @Override
             public void onChanged(String number, boolean isCompleted) {
                 Logger.i(number);
-                if(isCompleted){
+                if (isCompleted) {
                     //mInputView.setVisibility(View.INVISIBLE);
                     if (null != getActivity()) {
                         mPopupKeyboard.dismiss(getActivity());
@@ -152,21 +170,17 @@ public class VisitorInFragment extends BaseFragment {
         });
         //cert type
         mCertTypeList.add(new CertTypeItem("身份证"));
-        mCertTypeList.add(new CertTypeItem("学生证"));
-        mCertTypeList.add(new CertTypeItem("军官证"));
+        mCertTypeList.add(new CertTypeItem("其他"));
         mCertAdapter = new CertTypeAdapter(mContext, mCertTypeList);
         mSpCertType.setAdapter(mCertAdapter);
         //sex type
         String[] sexTypes = getResources().getStringArray(R.array.sex_types);
-        for (String item : sexTypes){
+        for (String item : sexTypes) {
             mSexTypeList.add(new SexTypeItem(item));
         }
         mSexAdapter = new SexTypeAdapter(mContext, mSexTypeList);
         mSpSexType.setAdapter(mSexAdapter);
         //cause type
-        mCauseTypeList.add(new CauseTypeItem("商务"));
-        mCauseTypeList.add(new CauseTypeItem("政务"));
-        mCauseTypeList.add(new CauseTypeItem("军务"));
         mCauseAdapter = new CauseAdapter(mContext, mCauseTypeList);
         mSpCause.setAdapter(mCauseAdapter);
         //recycler
@@ -174,17 +188,75 @@ public class VisitorInFragment extends BaseFragment {
         mRecyVisitIn.setLayoutManager(layoutManager);
         mVisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
         mRecyVisitIn.setAdapter(mVisitInAdapter);
+        //query
+        new AsyncTask<Void, Integer, Boolean>() {
+            private RESP_DICT mDict;
 
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                //根据手机尾号查
+                HttpApi httpApi = new HttpApi();
+                String type = "causeofvisit";
+                mDict = httpApi.getDict_Request(type, 2);
+                if (null != mDict) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                if (result) {
+                    for (RESP_DICT.ListItem item : mDict.getList()) {
+                        mCauseTypeList.add(new CauseTypeItem(item.getName()));
+                    }
+                    mCauseAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(mContext, "查询字典失败", Toast.LENGTH_SHORT);
+                }
+            }
+        }.execute();
     }
 
 
-
     void ui_UpdateIdInfo(IdentityInfo info, Bitmap bitmapHead) {
+
         mEdtIdCode.setText(info.getNo());
         mEdtName.setText(info.getName().replace(" ", ""));
         mSpSexType.setSelection(getPosBySex(info.getSex().substring(0, 1)));
         if (null != bitmapHead) {
             mImgHead.setImageBitmap(bitmapHead);
+            //save img_head
+            String picPath;
+            String picName;
+            picName = mVisitInfoEntity.getImg_head();
+            if (StringUtil.isEmptyTrimed(picName)) {
+                SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
+                //name:A_设备名_证件号码_时间.jpg
+                String strIdCode = mEdtIdCode.getText().toString();
+                StringBuilder stringBuilder = new StringBuilder("A_")
+                        .append(spUtil.getStringValue("devName", ""))
+                        .append("_")
+                        .append(strIdCode)
+                        .append("_")
+                        .append(DateUtil.getNowDateTime("yyyyMMdd_HHmmss"))
+                        .append(".jpg");
+                picName = stringBuilder.toString();
+            }
+            StringBuilder pathBuilder = new StringBuilder(GlobalConfig.get_ImgPath())
+                    .append("/")
+                    .append(picName);
+            picPath = pathBuilder.toString();
+            Logger.d("head save= " + picPath);
+            BitmapUtil.saveBitmap(picPath, bitmapHead, "JPG", 100);
+            mVisitInfoEntity.setImg_head(picName);
         }
     }
 
@@ -200,11 +272,13 @@ public class VisitorInFragment extends BaseFragment {
     /**
      * 拍照
      */
-    public void take_pic(String picName){
-        mCameraView.doTakePicture(picName);
+    public void take_pic(String picPath, String picName) {
+        mCameraView.doTakePicture(picPath, picName);
     }
+
     /**
      * 点击窗体隐藏键盘
+     *
      * @param v 视图
      */
     @OnClick(R.id.layout_idcard2)
@@ -214,28 +288,29 @@ public class VisitorInFragment extends BaseFragment {
         }
         //关闭软键盘
         InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        if (null != inputManager && null != getView().getWindowToken()) {
+            inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        }
 
     }
 
     @OnClick(R.id.edt_interviewee)
-    void onClick_Interviewee(View view){
+    void onClick_Interviewee(View view) {
         //Logger.d("interviewee onClick");
         //query
         //create dialog
         List<VdInfoItem> vdInfoList = new ArrayList<VdInfoItem>();
 //        vdInfoList.add(new VdInfoItem("研发部", "李晓明", "11111111111", true));
         VdInfoDialog vdInfoDialog = new VdInfoDialog(mContext, vdInfoList);
-        vdInfoDialog.setOnGetVdInfoCallBack(new VdInfoDialog.OnGetVdInfoListener(){
+        vdInfoDialog.setOnGetVdInfoCallBack(new VdInfoDialog.OnGetVdInfoListener() {
 
             @Override
             public void getVdInfo(VdInfoItem vdInfoItem) {
                 mEdtInterviewee.setText(vdInfoItem.getName());
                 mEdtBePhone.setText(vdInfoItem.getWorkPhone());
-                if (null == mEventEntity){
-                    mEventEntity = new VisitEventEntity();
-                }
                 mEventEntity.setIntervieweeId(vdInfoItem.getId());//被訪者id
+                mEventEntity.setDeparmentId(vdInfoItem.getDeparmentId());//部门id
+
             }
         });
         vdInfoDialog.show();
@@ -266,81 +341,233 @@ public class VisitorInFragment extends BaseFragment {
 
 
     @OnClick(R.id.btn_author_card)
-    void onClick_Author_Card(View v){
+    void onClick_Author_Card(View v) {
+        //check
+        String strIdCode = mEdtIdCode.getText().toString();
+        if (StringUtil.isEmptyTrimed(strIdCode)) {
+            Toast.makeText(mContext, "请输入证件号码", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        if (null == mEventEntity.getIntervieweeId()) {
+            Toast.makeText(mContext, "请输入被访者", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AUTHOR_CARD author_card = new AUTHOR_CARD();
+        author_card.setCardNum("0102030405060708");
+        author_card.setVieweeId(mEventEntity.getIntervieweeId());
+        author_card.setDepId(mEventEntity.getDeparmentId());
+        author_card.setVisitorIdNum(strIdCode);
+        Logger.d("Author Card= " + author_card);
+
+        new AsyncTask<AUTHOR_CARD,Integer,Boolean>(){
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected Boolean doInBackground(AUTHOR_CARD... args) {
+                HttpApi client = new HttpApi();
+                return client.authorCard_Request(args[0], 2000);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                if (result) {
+                    Toast.makeText(mContext, "授权成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "授权失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute(author_card);
     }
 
+    @OnClick(R.id.btn_print_qr)
+    void onClick_Author_QR(View v) {
+        Bitmap bitmap = QRUtil.create_QRImg("123456");
+        if (null != bitmap) {
+            //paht:GOODS_设备名_时间.jpg
+            String picPath = mContext.getFilesDir().getPath().toString();//获取file路径
+            picPath += "/QR_" + DateUtil.getNowDateTimeFormat() + ".jpg";
+            Logger.d("save path=" + picPath);
+            BitmapUtil.saveBitmap(picPath, bitmap, "JPG", 100);
+        }
+
+    }
     /**
      * 拍摄人像
+     *
      * @param v
      */
     @OnClick(R.id.btn_take_portrait)
-    void onClick_TakePortrait(View v){
+    void onClick_TakePortrait(View v) {
         String picPath;
+        String picName;
 
-        //paht:LIVE_设备名_时间.jpg
-        picPath = mContext.getFilesDir().getPath().toString();//获取file路径
-        picPath += "/LIVE_" + DateUtil.getNowDateTimeFormat() + ".jpg";
-        Logger.d("save path=" + picPath);
-        take_pic(picPath);
-        //save
-        if (null == mVisitInfoEntity){
-            mVisitInfoEntity = new VisitInfoEntity();
+        //check
+        String strIdCode = mEdtIdCode.getText().toString();
+        if (StringUtil.isEmptyTrimed(strIdCode)){
+            Toast.makeText(mContext, "请先输入证件号码", Toast.LENGTH_SHORT).show();
+            return;
         }
-        mVisitInfoEntity.setImg_portrait(picPath);
+        //take pic
+        picName = mVisitInfoEntity.getImg_portrait();
+        if (StringUtil.isEmptyTrimed(picName)) {
+            SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
+            //name:C_设备名_证件号码_时间.jpg
+            StringBuilder stringBuilder = new StringBuilder("C_")
+                    .append(spUtil.getStringValue("devName", ""))
+                    .append("_")
+                    .append(strIdCode)
+                    .append("_")
+                    .append(DateUtil.getNowDateTime("yyyyMMdd_HHmmss"))
+                    .append(".jpg");
+            picName = stringBuilder.toString();
+
+        }
+
+        picPath = GlobalConfig.get_ImgPath();//获取file路径
+        picPath += "/";
+        Logger.d("save path=" + picPath + picName);
+        take_pic(picPath, picName);
+        //save
+        mVisitInfoEntity.setImg_portrait(picName);
     }
 
     /**
      * 拍摄物品
+     *
      * @param v
      */
     @OnClick(R.id.btn_take_goods)
     void onClick_TakeGoods(View v) {
         String picPath;
+        String picName;
 
-        //paht:LIVE_设备名_时间.jpg
-        picPath = mContext.getFilesDir().getPath().toString();//获取file路径
-        picPath += "/Goods_" + DateUtil.getNowDateTimeFormat() + ".jpg";
-        Logger.d("save path=" + picPath);
-        take_pic(picPath);
-        //save
-        if (null == mVisitInfoEntity){
-            mVisitInfoEntity = new VisitInfoEntity();
+        //check
+        String strIdCode = mEdtIdCode.getText().toString();
+        if (StringUtil.isEmptyTrimed(strIdCode)){
+            Toast.makeText(mContext, "请先输入证件号码", Toast.LENGTH_SHORT).show();
+            return;
         }
-        mVisitInfoEntity.setImg_portrait(picPath);
+        //take pic
+        picName = mVisitInfoEntity.getImg_goods();
+        if (StringUtil.isEmptyTrimed(picName)) {
+            SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
+            //name:E_设备名_证件号码_时间.jpg
+            StringBuilder stringBuilder = new StringBuilder("E_")
+                    .append(spUtil.getStringValue("devName", ""))
+                    .append("_")
+                    .append(strIdCode)
+                    .append("_")
+                    .append(DateUtil.getNowDateTime("yyyyMMdd_HHmmss"))
+                    .append(".jpg");
+            picName = stringBuilder.toString();
+        }
+
+        picPath = GlobalConfig.get_ImgPath();//获取file路径
+        picPath += "/";
+        Logger.d("save path=" + picPath);
+        take_pic(picPath, picName);
+        //save
+        mVisitInfoEntity.setImg_goods(picName);
+    }
+
+    /**
+     * 拍摄证件
+     *
+     * @param v
+     */
+    @OnClick(R.id.btn_take_cert)
+    void onClick_TakeCert(View v) {
+        String picPath;
+        String picName;
+
+        //check
+        String strIdCode = mEdtIdCode.getText().toString();
+        if (StringUtil.isEmptyTrimed(strIdCode)){
+            Toast.makeText(mContext, "请先输入证件号码", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //take pic
+        picName = mVisitInfoEntity.getImg_cert();
+        if (StringUtil.isEmptyTrimed(picName)) {
+            SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
+            //name:B_设备名_证件号码_时间.jpg
+            StringBuilder stringBuilder = new StringBuilder("B_")
+                    .append(spUtil.getStringValue("devName", ""))
+                    .append("_")
+                    .append(strIdCode)
+                    .append("_")
+                    .append(DateUtil.getNowDateTime("yyyyMMdd_HHmmss"))
+                    .append(".jpg");
+            picName = stringBuilder.toString();
+
+        }
+        picPath = GlobalConfig.get_ImgPath();//获取file路径
+        picPath += "/";
+        take_pic(picPath, picName);
+        //save
+        mVisitInfoEntity.setImg_cert(picName);
+    }
+
+    void ui_Disable() {
+        mEdtVisitCount.setEnabled(false);
+        mEdtBePhone.setEnabled(false);
+        mEdtBookPhone.setEnabled(false);
+        mEdtInterviewee.setEnabled(false);
+        mCBIsBook.setEnabled(false);
+    }
+
+    void ui_Enable() {
+        mEdtVisitCount.setEnabled(true);
+        mEdtBePhone.setEnabled(true);
+        mEdtBookPhone.setEnabled(true);
+        mEdtInterviewee.setEnabled(true);
+        mCBIsBook.setEnabled(true);
     }
 
     @OnClick(R.id.btn_start_checkin)
-    void onClick_Start_CheckIn(View v){
-        //title 不可编辑
+    void onClick_Start_CheckIn(View v) {
         //check
         String strCount = mEdtVisitCount.getText().toString();
-
-        if (null == strCount || 0 == strCount.length()) {
-            return ;
+        if (StringUtil.isEmptyTrimed(strCount)) {
+            Toast.makeText(mContext, "请输入来访人数", Toast.LENGTH_SHORT).show();
+            return;
         }
+        String strInterviewee = mEdtInterviewee.getText().toString();
+        if (StringUtil.isEmptyTrimed(strInterviewee)) {
+            Toast.makeText(mContext, "请选择被访人", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //visit event 不可编辑
+        ui_Disable();
         //save 来访事件data
         if (!mIsStartCheckIn) {
             mBtnStartCheckIn.setText("重新登记");
-            if (null == mEventEntity) {
-                mEventEntity = new VisitEventEntity();
-            }
             mEventEntity.setVisitorCount(Integer.parseInt(strCount));
+            mEventEntity.setInsetTime(new Date());
+            //clear id
+            mEventEntity.setId(null);
             //sava db
             DBTask task = DBTask.getInstance();
-            task.start_AddVisitEventAsync(mEventEntity, new DBTask.onDBResultListener() {
+            task.start_AddVisitEventAsync(mEventEntity, new DBTask.onDBAddResultListener() {
 
                 @Override
-                public void onAddResult(boolean result, long id) {
+                public void onAddResult(boolean result) {
                     if (result) {
-                        Logger.d("save id=" + id);
-                        mEventEntity.setId(id);
+                        Logger.d("save id=" + mEventEntity.getId());
                     }
                 }
+
             });
 
-        }else {
+        } else {
             mBtnStartCheckIn.setText("开始登记");
+            ui_Enable();
         }
 
         mIsStartCheckIn = !mIsStartCheckIn;
@@ -351,25 +578,22 @@ public class VisitorInFragment extends BaseFragment {
      */
     @OnClick(R.id.btn_finish)
     void onClick_Finish(View v) {
-        if (!vaild_VisitorInfo()){
+        if (!vaild_VisitorInfo()) {
             Toast.makeText(mContext, "登记信息有误", Toast.LENGTH_SHORT).show();
             return;
         }
         //获取信息
-        if (null == mVisitInfoEntity){
-            mVisitInfoEntity = new VisitInfoEntity();
-        }
         get_VisitorInfo(mVisitInfoEntity);
         DBTask task = DBTask.getInstance();
-        task.start_AddVisitInfoAsync(mVisitInfoEntity, new DBTask.onDBResultListener() {
+        task.start_AddVisitInfoAsync(mVisitInfoEntity, new DBTask.onDBAddResultListener() {
             @Override
-            public void onAddResult(boolean result, long id) {
+            public void onAddResult(boolean result) {
                 if (result) {
                     Toast.makeText(mContext, "登记保存成功", Toast.LENGTH_SHORT).show();
                     //update result show
                     mVisitInList.add(0, new VisitInInfoItem(mVisitInfoEntity.getVisitor_name(),
-                            mEdtInterviewee.getText().toString(),  mVisitInfoEntity.getBook_phone(),
-                            "", "", ""));
+                            mEdtInterviewee.getText().toString(), mVisitInfoEntity.getBook_phone(),
+                            DateUtil.getDateTimeFormat(mVisitInfoEntity.getIn_time())));
                     mVisitInAdapter.notifyItemInserted(0);
 
                 } else {
@@ -379,6 +603,7 @@ public class VisitorInFragment extends BaseFragment {
                 ui_ClearData();
 
             }
+
         });
 
 
@@ -391,10 +616,16 @@ public class VisitorInFragment extends BaseFragment {
         mEdtBePhone.setText("");
         mBtnStartCheckIn.setText("開始登記");
         mIsStartCheckIn = false;
-
+        ui_Enable();
+        //clear data
+        mEventEntity.setId(null);
+        mEventEntity.setDeparmentId(null);
+        mEventEntity.setVisitorCount(null);
+        mEventEntity.setInsetTime(null);
     }
-    private void ui_ClearData() {
 
+    private void ui_ClearData() {
+        //clear show
         mEdtIdCode.setText("");
         mEdtName.setText("");
         mEdtVisitPhone.setText("");
@@ -402,9 +633,13 @@ public class VisitorInFragment extends BaseFragment {
         mEdtGoods.setText("");
         mIvCar.updateNumber("");
         mImgHead.setImageBitmap(null);
-
-        mEventEntity.setVisitorCount(mEventEntity.getVisitorCount()-1);
-        if(0 == mEventEntity.getVisitorCount()){
+        //clear img
+        mVisitInfoEntity.setImg_cert("");
+        mVisitInfoEntity.setImg_goods("");
+        mVisitInfoEntity.setImg_portrait("");
+        mVisitInfoEntity.setImg_head("");
+        mEventEntity.setVisitorCount(mEventEntity.getVisitorCount() - 1);
+        if (0 == mEventEntity.getVisitorCount()) {
             //clear visitinfo list
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -417,7 +652,7 @@ public class VisitorInFragment extends BaseFragment {
             }, 2000);
 
         }
-        mVisitInfoEntity = null;
+
     }
 
     /**
@@ -426,23 +661,24 @@ public class VisitorInFragment extends BaseFragment {
      * @return true/false
      */
     private boolean vaild_VisitorInfo() {
+
         String strName = mEdtName.getText().toString();
         String strIdNum = mEdtIdCode.getText().toString();
         String strPhone = mEdtVisitPhone.getText().toString();
-
-        if (null == strName || 0 == strName.length()) {
+        //check name
+        if (StringUtil.isEmptyTrimed(strName)) {
+            return false;
+        }
+        //check idnum
+        if (StringUtil.isEmptyTrimed(strIdNum)) {
+            return false;
+        }
+        //check phone
+        if (StringUtil.isEmptyTrimed(strPhone)) {
             return false;
         }
 
-        if (null == strIdNum || 0 == strIdNum.length()) {
-            return false;
-        }
-
-        if (null == strPhone || 0 == strPhone.length()) {
-            return false;
-        }
-
-        if (!mIsStartCheckIn){
+        if (!mIsStartCheckIn) {
             return false;
         }
         return true;
@@ -450,6 +686,8 @@ public class VisitorInFragment extends BaseFragment {
 
     private void get_VisitorInfo(VisitInfoEntity visitEntity) {
 
+        //clear id
+        visitEntity.setId(null);
         //來訪事件
         visitEntity.setVisit_event_id(mEventEntity.getId());
         //来访者名字
@@ -478,14 +716,11 @@ public class VisitorInFragment extends BaseFragment {
             visitEntity.setDeparment(mEdtUnit.getText().toString());
         }
         //携带物品
-        if (null != mEdtGoods.getText()){
+        if (null != mEdtGoods.getText()) {
             visitEntity.setGoods(mEdtGoods.getText().toString());
         }
         //车牌
         visitEntity.setCar_plate(mIvCar.getNumber());
-        //头像图片
-
-        //人像照片
 
         //来访时间
         visitEntity.setIn_time(new Date());
