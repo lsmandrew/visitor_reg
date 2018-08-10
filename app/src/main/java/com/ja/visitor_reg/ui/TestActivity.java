@@ -50,7 +50,7 @@ public class TestActivity extends BaseActivity {
                         LOGIN_INFO login_info =  new LOGIN_INFO();
                         login_info.setDeviceName("ja-20180703-001");
                         login_info.setPassword("123456");
-                        httpApi.Login_Request(login_info);
+                        httpApi.login_Request(login_info, 1);
                     }
                 }
         ).start();
@@ -63,7 +63,7 @@ public class TestActivity extends BaseActivity {
                     public void run() {
                         Log.d("TestActivity", "run: ");
                         HttpApi httpApi = new HttpApi();
-                        httpApi.Logout_Request();
+                        httpApi.logout_Request(1);
                     }
                 }
         ).start();
@@ -77,7 +77,7 @@ public class TestActivity extends BaseActivity {
                     public void run() {
                         Log.d("TestActivity", "run: ");
                         HttpApi httpApi = new HttpApi();
-                        httpApi.GetDevId_Request();
+                        httpApi.getDevId_Request(1);
                     }
                 }
         ).start();
@@ -90,7 +90,7 @@ public class TestActivity extends BaseActivity {
                     public void run() {
                         Log.d("TestActivity", "run: ");
                         HttpApi httpApi = new HttpApi();
-                        httpApi.GetDevInfo_Request();
+                        httpApi.getDevInfo_Request(1);
                     }
                 }
         ).start();

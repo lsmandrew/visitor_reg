@@ -45,6 +45,7 @@ public class VdInfoAdapter extends BaseAdapter {
             holder.tv_dep = convertView.findViewById(R.id.tv_vdinfo_dep);
             holder.tv_name = convertView.findViewById(R.id.tv_vdinfo_name);
             holder.tv_phone = convertView.findViewById(R.id.tv_vdinfo_phone);
+            holder.tv_status = convertView.findViewById(R.id.tv_vdinfo_agree);
             // 将视图持有者保存到转换视图当中
             convertView.setTag(holder);
         } else {
@@ -57,7 +58,11 @@ public class VdInfoAdapter extends BaseAdapter {
         holder.tv_dep.setText(item.getDepartment());
         holder.tv_name.setText(item.getName());
         holder.tv_phone.setText(item.getWorkPhone());
-
+        if (item.isAgree()) {
+            holder.tv_status.setText("同意");
+        } else {
+            holder.tv_status.setText("不同意");
+        }
         return convertView;
     }
 
@@ -66,5 +71,6 @@ public class VdInfoAdapter extends BaseAdapter {
         public TextView tv_dep;
         public TextView tv_name;
         public TextView tv_phone;
+        public TextView tv_status;
     }
 }

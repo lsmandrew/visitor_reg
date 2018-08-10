@@ -5,12 +5,19 @@ public class VdInfoItem {
     private String name;
     private String workPhone;
     private boolean isAgree;
+    private Long  deparmentId;
+    private Long  id;//用戶標識
 
-    public VdInfoItem(String department, String name, String workPhone, boolean isAgree) {
+    public VdInfoItem() {
+    }
+
+    public VdInfoItem(String department, String name, String workPhone, boolean isAgree, Long deparmentId, Long id) {
         this.department = department;
         this.name = name;
         this.workPhone = workPhone;
         this.isAgree = isAgree;
+        this.deparmentId = deparmentId;
+        this.id = id;
     }
 
     public String getDepartment() {
@@ -45,6 +52,22 @@ public class VdInfoItem {
         isAgree = agree;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getDeparmentId() {
+        return deparmentId;
+    }
+
+    public void setDeparmentId(Long deparmentId) {
+        this.deparmentId = deparmentId;
+    }
+
     @Override
     public String toString() {
         return "VdInfoItem{" +
@@ -52,6 +75,8 @@ public class VdInfoItem {
                 ", name='" + name + '\'' +
                 ", workPhone='" + workPhone + '\'' +
                 ", isAgree=" + isAgree +
+                ", deparmentId=" + deparmentId +
+                ", id=" + id +
                 '}';
     }
 }

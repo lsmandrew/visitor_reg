@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.ja.visitor_reg.config.GlobalConfig;
 import com.ja.visitor_reg.greendao.DaoMaster;
 import com.ja.visitor_reg.greendao.DaoMaster.DevOpenHelper;
 import com.ja.visitor_reg.greendao.DaoSession;
@@ -43,8 +44,8 @@ public class ApplicationUtil extends Application {
 
         mContent = getApplicationContext();
         //init greendao
-        DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? "notes-db-encrypted" : "notes-db");
-        Database db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
+        DevOpenHelper helper = new DevOpenHelper(this, ENCRYPTED ? GlobalConfig.DB_NAME : "visitor_reg.db");
+        Database db = ENCRYPTED ? helper.getEncryptedWritableDb(GlobalConfig.DB_PWD) : helper.getWritableDb();
         mDaoSession = new DaoMaster(db).newSession();
         ////use Loger init////
         Logger.addLogAdapter(new AndroidLogAdapter() {
@@ -54,6 +55,8 @@ public class ApplicationUtil extends Application {
             }
         });
         Logger.d("onCreate");
+        ////configure file////
+        Init_Configure();
     }
 
     /**
@@ -93,6 +96,34 @@ public class ApplicationUtil extends Application {
             mInstance = new ApplicationUtil();
         }
         return mInstance;
+    }
+
+    /**
+     * 初始化配置文件
+     */
+    void Init_Configure(){
+        SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
+        String devName = (String) sp.get("devName", "");
+        if (StringUtil.isEmptyTrimed(devName)) {
+            devName = GlobalConfig.DEFAULT_DEV_NAME;
+            sp.put("devName", devName);
+        }
+        String devPwd = (String) sp.get("devPwd", "");
+        if (StringUtil.isEmptyTrimed(devPwd)) {
+            devPwd = GlobalConfig.DEFAULT_DEV_PWD;
+            sp.put("devPwd", devPwd);
+        }
+        String serIp = (String) sp.get("serIp", "");
+        if (StringUtil.isEmptyTrimed(serIp)) {
+            serIp = "192.168.11.51";
+            sp.put("serIp", serIp);
+        }
+        int serPort = (int) sp.get("serPort", -1);
+        if (-1 == serPort) {
+            serPort = 9090;
+            sp.put("serPort", serPort);
+        }
+
     }
 
 }

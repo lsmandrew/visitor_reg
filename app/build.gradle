@@ -61,6 +61,9 @@ dependencies {
     implementation files('libs/IDCardReader.jar')
     //蜂鸣器
     implementation files('libs/core-3.1.0.jar')
+    //implementation 'com.google.zxing:core:3.2.1'
+    //第三方zxing二维码
+    //implementation 'com.journeyapps:zxing-android-embedded:3.3.0'
     //orm框架
     implementation 'org.greenrobot:greendao:3.2.2'
     //加密数据库

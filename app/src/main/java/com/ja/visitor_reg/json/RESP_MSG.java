@@ -1,5 +1,8 @@
 package com.ja.visitor_reg.json;
 
+/**
+ * 信息回复
+ */
 public class RESP_MSG {
     private String msg;
     private Long code;
@@ -22,6 +25,14 @@ public class RESP_MSG {
         this.code = code;
     }
 
+    public Long getExpire() {
+        return expire;
+    }
+
+    public void setExpire(Long expire) {
+        this.expire = expire;
+    }
+
     public String getToken() {
         return token;
     }
@@ -30,11 +41,13 @@ public class RESP_MSG {
         this.token = token;
     }
 
-    public Long getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Long expire) {
-        this.expire = expire;
+    @Override
+    public String toString() {
+        return "RESP_MSG{" +
+                "msg='" + msg + '\'' +
+                ", code=" + code +
+                ", expire=" + expire +
+                ", token='" + token + '\'' +
+                '}';
     }
 }

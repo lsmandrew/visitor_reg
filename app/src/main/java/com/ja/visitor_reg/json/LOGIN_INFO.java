@@ -1,5 +1,8 @@
 package com.ja.visitor_reg.json;
 
+/**
+ * 登陆信息
+ */
 public class LOGIN_INFO {
     private  String deviceName;
     private  String password;
@@ -18,5 +21,13 @@ public class LOGIN_INFO {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String toString() {
+        return "LOGIN_INFO{" +
+                "deviceName='" + deviceName + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
