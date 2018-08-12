@@ -21,7 +21,7 @@ public class LogUtil {
     private static final int e = 4;
     //===================以下参数，根据实际情况进行修改===================
     public static final int level = 5;//(ApplicationUtil.isDebugMode() == true ? 5 : -1);     //打开log信息
-    private static boolean isSave = true;  // 日志是否保存在SD卡
+    private static boolean isSave = false;  // 日志是否保存在SD卡
     //每条日志记录的有效负载长度加上结构体logger_entry的长度不能超过4K个字节。根据平台通用性，这里自定义为1K
     private static int MAX_LENGTH = 1024;
 

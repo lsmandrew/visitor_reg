@@ -48,7 +48,7 @@ public class VisitorOutFragment extends BaseFragment {
     @OnClick(R.id.btn_visitout_search)
     void onClick_Search(View v) {
         Toast.makeText(mContext,"搜索", Toast.LENGTH_SHORT).show();
-        DBTask dbTask = DBTask.getInstance();
+        DBTask dbTask = new DBTask();
         dbTask.start_QueryVisitRecord(new DBTask.onDBQueryResultListener() {
             @Override
             public void onQueryResult(List<?> list) {

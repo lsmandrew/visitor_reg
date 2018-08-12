@@ -1,5 +1,6 @@
 package com.ja.visitor_reg.ui.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -43,6 +44,7 @@ import com.ja.visitor_reg.model.SexTypeItem;
 import com.ja.visitor_reg.model.VdInfoItem;
 import com.ja.visitor_reg.model.VisitInInfoItem;
 import com.ja.visitor_reg.task.DBTask;
+import com.ja.visitor_reg.task.IDCardTask;
 import com.ja.visitor_reg.ui.camera.CameraView;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
 import com.orhanobut.logger.Logger;
@@ -319,8 +321,8 @@ public class VisitorInFragment extends BaseFragment {
 
     @OnClick(R.id.btn_scan_cert)
     void onClick_Scan_Cert(View v) {
-        IdCardReaderUtil util = IdCardReaderUtil.getInstance();
-        util.start_ReadCardAsync(getActivity(), new IdCardReaderUtil.readIDCardListener() {
+        IDCardTask task = new IDCardTask();
+        task.start_ReadCardAsync(getActivity(), new IdCardReaderUtil.readIDCardListener() {
             @Override
             public void onReadIDCardInfo(IdentityInfo info, Bitmap bitmapHead) {
 
@@ -553,7 +555,7 @@ public class VisitorInFragment extends BaseFragment {
             //clear id
             mEventEntity.setId(null);
             //sava db
-            DBTask task = DBTask.getInstance();
+            DBTask task = new DBTask();
             task.start_AddVisitEventAsync(mEventEntity, new DBTask.onDBAddResultListener() {
 
                 @Override
@@ -584,7 +586,7 @@ public class VisitorInFragment extends BaseFragment {
         }
         //获取信息
         get_VisitorInfo(mVisitInfoEntity);
-        DBTask task = DBTask.getInstance();
+        DBTask task = new DBTask();
         task.start_AddVisitInfoAsync(mVisitInfoEntity, new DBTask.onDBAddResultListener() {
             @Override
             public void onAddResult(boolean result) {

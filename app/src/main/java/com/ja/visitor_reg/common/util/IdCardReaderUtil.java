@@ -23,12 +23,21 @@ public class IdCardReaderUtil {
     private static IdCardReaderUtil mInstance = null;
     private IdentityInfo mIdinfo = null;
     private Bitmap mBitmapHead = null;
-    private IdcardTask mTask = null;
     private readIDCardListener mReadIDListener = null;
-    private final int CHECK_TIMEOUT = 1000;//ms
+    private Activity mActivity;
 
+    private final int CHECK_TIMEOUT = 1000;//timeout(ms)
 
     private IdCardReaderUtil() {
+    }
+
+    public void init_data(){
+        mIdinfo = null;
+        mBitmapHead = null;
+    }
+    public void setup_param(Activity activity, readIDCardListener listener){
+        mActivity = activity;
+        mReadIDListener = listener;
     }
 
     public boolean isUsbMount(Activity activity) {
@@ -63,82 +72,37 @@ public class IdCardReaderUtil {
         return true;
     }
 
-    /**
-     * 异步读卡任务
-     */
-    class IdcardTask extends AsyncTask<Activity, Integer, TelpoException> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mIdinfo = null;
-            mBitmapHead = null;
+    public boolean read_Idcard(){
+        //check usb
+        if (!isUsbMount(mActivity)) {
+            return false;
         }
-
-        @Override
-        protected TelpoException doInBackground(Activity... activities) {
-            TelpoException result = null;
-            if (isUsbMount(activities[0])) {
-                try {
-                    //IdCard.close();
-                    IdCard.open(IdCard.IDREADER_TYPE_USB, activities[0]);
-                    mIdinfo = IdCard.checkIdCard(CHECK_TIMEOUT);
-                    if(null != mIdinfo){
-                        mBitmapHead = IdCard.decodeIdCardImage(mIdinfo.getHead_photo());
-                    }
-                    IdCard.close();
-                } catch (TelpoException e) {
-                    e.printStackTrace();
-                    result = e;
-                }
+        //read
+        try {
+            IdCard.open(IdCard.IDREADER_TYPE_USB, mActivity);
+            mIdinfo = IdCard.checkIdCard(CHECK_TIMEOUT);
+            if(null != mIdinfo){
+                mBitmapHead = IdCard.decodeIdCardImage(mIdinfo.getHead_photo());
             }
-            return result;
+            IdCard.close();
+        } catch (TelpoException e) {
+            e.printStackTrace();
+            return false;
         }
-
-        @Override
-        protected void onPostExecute(TelpoException e) {
-            super.onPostExecute(e);
-            if (null == e && null != mIdinfo) {
-                ;
-            } else { //fail
-                mIdinfo = null;
-                mBitmapHead = null;
-            }
-            if (null != mReadIDListener) {
-                mReadIDListener.onReadIDCardInfo(mIdinfo, mBitmapHead);
-            }
-        }
-
-
+        return true;
     }
-
-    /**
-     * 开启读身份证任务
-     * @param activity 当前活动
-     * @param listener 读取结果监听器注册
-     */
-    public void start_ReadCardAsync(Activity activity, readIDCardListener listener) {
-        mReadIDListener = listener;
-
-        if (null != mTask) {
-            //之前task还在运行，不创建新任务
-            if (mTask.getStatus() == AsyncTask.Status.RUNNING) {
-                return;
-            }
-        }
-        mTask = new IdcardTask();
-
-        if (mTask.getStatus() != AsyncTask.Status.RUNNING) {
-            mTask.execute(activity);
-        }
-
-    }
-
 
     public static IdCardReaderUtil getInstance() {
         if (null == mInstance) {
             mInstance = new IdCardReaderUtil();
         }
         return mInstance;
+    }
+
+    public void post_result(Boolean result) {
+        if (null != mReadIDListener){
+            mReadIDListener.onReadIDCardInfo(mIdinfo, mBitmapHead);
+        }
     }
 
     public interface readIDCardListener {
