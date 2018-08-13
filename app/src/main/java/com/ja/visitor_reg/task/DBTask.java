@@ -2,15 +2,11 @@ package com.ja.visitor_reg.task;
 
 import android.os.AsyncTask;
 
-import com.ja.visitor_reg.common.util.ApplicationUtil;
 import com.ja.visitor_reg.common.util.DBUtil;
 import com.ja.visitor_reg.entity.VisitEventEntity;
 import com.ja.visitor_reg.entity.VisitInfoEntity;
-import com.ja.visitor_reg.greendao.DaoSession;
-import com.ja.visitor_reg.greendao.VisitEventEntityDao;
-import com.ja.visitor_reg.greendao.VisitInfoEntityDao;
-import com.orhanobut.logger.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,17 +15,22 @@ import java.util.List;
  * date: 2018-8-4
  */
 public class DBTask extends AsyncTask<Integer, Integer, Boolean> {
+
     private DBUtil mDBUtil;
     private VisitInfoEntity mVisitInfoEntity = null;
     private VisitEventEntity mVisitEventEntity = null;
     private onDBAddResultListener mAddListener = null;
     private onDBQueryResultListener mQueryListener = null;
+    private onDBOutResultListener mOutListener = null;
     private List<VisitInfoEntity> mVisitInfoList;
     private int mCmd;
+    private Long mVisitId;
+    private Date mOutDate;
 
     private static final int ADD_VISIT_EVENT = 0x01;
     private static final int ADD_VISIT_INFO = 0x02;
     private static final int QUERY_VISITIN_RECORD = 0x03;
+    private static final int SIGN_OUT =0x04;
 
 
     public DBTask() {
@@ -56,6 +57,9 @@ public class DBTask extends AsyncTask<Integer, Integer, Boolean> {
             case QUERY_VISITIN_RECORD://查询来访记录
                 mVisitInfoList = mDBUtil.query_VisitRecord();
                 break;
+            case SIGN_OUT:
+                mDBUtil.update_SignOut(mVisitId, mOutDate);
+                break;
         }
 
         return true;
@@ -76,8 +80,16 @@ public class DBTask extends AsyncTask<Integer, Integer, Boolean> {
                     mQueryListener.onQueryResult(mVisitInfoList);
                 }
                 break;
+            case SIGN_OUT:
+                if (null != mOutListener) {
+                    mOutListener.onSignOutResult(result);
+                }
+                break;
         }
     }
+
+
+
     ///////////////////////////////回调接口/////////////////////////////////////////
     public interface onDBAddResultListener {
         void onAddResult(boolean result);
@@ -86,6 +98,10 @@ public class DBTask extends AsyncTask<Integer, Integer, Boolean> {
     public interface onDBQueryResultListener {
         void onQueryResult(List<?> list);
 
+    }
+
+    public interface onDBOutResultListener {
+        void onSignOutResult(boolean result);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
@@ -117,4 +133,14 @@ public class DBTask extends AsyncTask<Integer, Integer, Boolean> {
     }
 
 
+    /**
+     * 签退
+     * @param id 来访信息的id
+     */
+    public void start_SignOut(Long id, Date outDate, onDBOutResultListener listener) {
+        mOutListener = listener;
+        mVisitId = id;
+        mOutDate = outDate;
+        this.execute(SIGN_OUT);
+    }
 }

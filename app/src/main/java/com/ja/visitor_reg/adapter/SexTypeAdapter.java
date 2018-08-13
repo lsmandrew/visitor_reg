@@ -40,14 +40,14 @@ public class SexTypeAdapter extends BaseAdapter {
         View view;
 
         if (null == convertView) {
-            TextView textView = new TextView(mContext);//new
-            textView.setTextSize(25);
-            SexTypeItem item = mSexTypeList.get(position);
-            textView.setText(item.getName());
-            view = textView;
+            view = new TextView(mContext);//new
         } else {
             view = convertView;
         }
+        TextView textView = (TextView)view;
+        textView.setTextSize(25);
+        SexTypeItem item = mSexTypeList.get(position);
+        textView.setText(item.getName());
         return view;
     }
 }

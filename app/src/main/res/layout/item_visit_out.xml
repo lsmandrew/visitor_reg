@@ -1,37 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_visitout_visitor"
-        android:hint="李晓波"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tv_visitout_visited"
-        android:hint="小白白"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tv_visitout_idnum"
-        android:hint="AABBCC1122334455"
-        android:layout_weight="2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tv_visitout_visitphone"
-        android:hint="22222222222"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tv_visitout_intime"
-        android:hint="2100-08-08 01:01:01"
-        android:layout_weight="2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:background="@drawable/item_out_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_visitout_visitor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="李晓波"/>
+
+        <TextView
+            android:id="@+id/tv_visitout_visited"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="小白白"/>
+
+        <TextView
+            android:id="@+id/tv_visitout_visitphone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="22222222222"/>
+
+        <TextView
+            android:id="@+id/tv_visitout_idnum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:hint="AABBCC1122334455"/>
+
+        <TextView
+            android:id="@+id/tv_visitout_intime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:hint="2100-08-08 01:01:01"/>
+    </LinearLayout>
+    <View
+        android:background="#00ff00"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 </LinearLayout>

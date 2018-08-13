@@ -51,6 +51,11 @@
             android:enabled="true"
             android:exported="false">
         </service>
+        <service
+            android:name=".serve.UploadService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
 
         <activity
             android:name=".MainActivity"

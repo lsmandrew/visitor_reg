@@ -6,6 +6,7 @@ package com.ja.visitor_reg.json;
  * {
  * "cardNum": "111",
  * "depId": 0,
+ * "type":0,
  * "vieweeId": 0,
  * "visitorIdNum": "222"
  * }
@@ -14,6 +15,7 @@ package com.ja.visitor_reg.json;
 public class AUTHOR_CARD {
     private String cardNum;
     private Long depId;
+    private Long type;
     private Long vieweeId;
     private String visitorIdNum;
 
@@ -49,16 +51,22 @@ public class AUTHOR_CARD {
         this.visitorIdNum = visitorIdNum;
     }
 
+    public Long getType() {
+        return type;
+    }
+
+    public void setType(Long type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "AUTHOR_CARD{" +
                 "cardNum='" + cardNum + '\'' +
                 ", depId=" + depId +
+                ", type=" + type +
                 ", vieweeId=" + vieweeId +
                 ", visitorIdNum='" + visitorIdNum + '\'' +
                 '}';
     }
-
-
-
 }

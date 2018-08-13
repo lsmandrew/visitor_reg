@@ -12,6 +12,7 @@ import com.ja.visitor_reg.common.util.DateUtil;
 import com.ja.visitor_reg.entity.VisitInfoEntity;
 import com.ja.visitor_reg.model.VisitRecordItem;
 import com.ja.visitor_reg.task.DBTask;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,22 +44,28 @@ public class VisitorOutFragment extends BaseFragment {
         mRecyVisitRecord.setLayoutManager(layoutManager);
         mVisitRecordAdapter = new VisitRecordAdapter(mRecordList);
         mRecyVisitRecord.setAdapter(mVisitRecordAdapter);
+
     }
 
     @OnClick(R.id.btn_visitout_search)
     void onClick_Search(View v) {
         Toast.makeText(mContext,"搜索", Toast.LENGTH_SHORT).show();
+        mRecordList.clear();
+        mVisitRecordAdapter.notifyDataSetChanged();
+
         DBTask dbTask = new DBTask();
         dbTask.start_QueryVisitRecord(new DBTask.onDBQueryResultListener() {
             @Override
             public void onQueryResult(List<?> list) {
                 List<VisitInfoEntity> visitList = (List<VisitInfoEntity>) list;
+                Logger.d("query result list count=" + visitList.size());
                 for (VisitInfoEntity itme : visitList) {
                     VisitRecordItem recordItem = new VisitRecordItem();
                     recordItem.setVisitName(itme.getVisitor_name());
                     recordItem.setIdNum(itme.getId_numer());
                     recordItem.setVisitPhone(itme.getBook_phone());
                     recordItem.setVisitTime(DateUtil.getDateTimeFormat(itme.getIn_time()));
+                    recordItem.setVisitId(itme.getId());
                     mRecordList.add(recordItem);
                 }
                 mVisitRecordAdapter.notifyDataSetChanged();

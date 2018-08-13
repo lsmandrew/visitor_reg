@@ -168,5 +168,12 @@ public class RESP_VISITEDINFO {
         this.list = list;
     }
 
-
+    @Override
+    public String toString() {
+        return "RESP_VISITEDINFO{" +
+                "msg='" + msg + '\'' +
+                ", code=" + code +
+                ", list=" + list +
+                '}';
+    }
 }

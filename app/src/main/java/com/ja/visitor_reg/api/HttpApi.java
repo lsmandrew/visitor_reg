@@ -11,6 +11,7 @@ import com.ja.visitor_reg.json.LOGIN_INFO;
 import com.ja.visitor_reg.json.RESP_DICT;
 import com.ja.visitor_reg.json.RESP_MSG;
 import com.ja.visitor_reg.json.RESP_VISITEDINFO;
+import com.ja.visitor_reg.json.VISIT_EVENT_UPLOAD;
 
 import java.io.File;
 import java.io.IOException;
@@ -240,8 +241,6 @@ public class HttpApi {
            OkHttpClient client = new OkHttpClient.Builder()
                    .connectTimeout(timeout, TimeUnit.SECONDS)
                    .build();
-           //ready param
-           //strUrl = "http://192.168.11.51:9090/ja-api/api/sysuser/getbymobile?mobile=";
            //packet url
            SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
            StringBuilder urlBuilder = new StringBuilder().append("http://")
@@ -286,7 +285,6 @@ public class HttpApi {
            OkHttpClient client = new OkHttpClient.Builder()
                    .connectTimeout(timeout, TimeUnit.SECONDS)
                    .build();
-           Log.d(TAG, "read_timeout:"+client.readTimeoutMillis());
            //packet url
            SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
            StringBuilder urlBuilder = new StringBuilder().append("http://")
@@ -343,7 +341,6 @@ public class HttpApi {
            OkHttpClient client = new OkHttpClient.Builder()
                    .connectTimeout(timeout, TimeUnit.SECONDS)
                    .build();
-           Log.d(TAG, "read_timeout:"+client.readTimeoutMillis());
            //packet url
            SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
            StringBuilder urlBuilder = new StringBuilder().append("http://")
@@ -427,6 +424,74 @@ public class HttpApi {
            return false;
        }
    }
+
+    /**
+     * 上传来访事件
+     * @param visitEventUpload 来访事件
+     * @param timeout 连接超时
+     * @return true/false
+     * @requir token
+     * post form
+     * {
+     * "causeId": 0,
+     * "deviceId": 0,
+     * "id": 0,
+     * "insetTime": "2018-08-13T02:00:45.235Z",
+     * "intervieweeId": 0,
+     * "isOrder": 0,
+     * "orderPhone": "string",
+     * "shifitId": 0,
+     * "visitorCount": 0
+     * }
+     * resp
+     * {"msg":"success","code":0,"visitEventId":6}
+     * {"msg":"token不能为空","code":500}
+     */
+   public boolean upload_VisitEvent(VISIT_EVENT_UPLOAD visitEventUpload, long timeout) {
+       try {
+           String strUrl;
+           Response response = null;
+           String jsonData = JSON.toJSONString(visitEventUpload);
+           Log.d(TAG, "json: " + jsonData);
+           RequestBody postBody = FormBody.create(
+                   MediaType.parse("application/json; charset=utf-8"),
+                   jsonData);
+           OkHttpClient client = new OkHttpClient.Builder()
+                   .connectTimeout(timeout, TimeUnit.SECONDS)
+                   .build();
+           //packet url
+           SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
+           StringBuilder urlBuilder = new StringBuilder().append("http://")
+                   .append(sp.getStringValue("serIp", ""))
+                   .append(":")
+                   .append(sp.getIntValue("serPort", 0))
+                   .append("/ja-api/api/vistor/visitEventSave");
+
+           Log.d(TAG, "upload_VisitEvent url=" + urlBuilder.toString());
+           Request request = new Request.Builder()
+                   .url(urlBuilder.toString())
+                   .header("Accept", "text/html")
+                   .addHeader("Content-Type", "application/json")
+                   .addHeader("token", TOKEN)
+                   .post(postBody)
+                   .build();
+           //response
+           response = client.newCall(request).execute();
+           String strBody = response.body().string();
+           Log.d(TAG, "resp: " + strBody);
+           RESP_MSG resp_msg = JSON.parseObject(strBody, RESP_MSG.class);
+           return resp_msg.getMsg().equals("success");
+       } catch (IOException e) {
+           e.printStackTrace();
+           return false;
+       } catch (Exception e) {
+           e.printStackTrace();
+           return false;
+       } finally {
+           return false;
+       }
+   }
+
     /**
      * http上传图片 单张图片
      * @param imgPath

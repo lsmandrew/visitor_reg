@@ -4,24 +4,38 @@ package com.ja.visitor_reg.model;
  * 证件类型（字典）
  */
 public class CertTypeItem {
-    private String mName;
+    private String name;
+    private String code;
 
-    public CertTypeItem(String mName) {
-        this.mName = mName;
+    public CertTypeItem() {
+    }
+
+    public CertTypeItem(String name, String code) {
+        this.name = name;
+        this.code = code;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override
     public String toString() {
         return "CertTypeItem{" +
-                "mName='" + mName + '\'' +
+                "name='" + name + '\'' +
+                ", code='" + code + '\'' +
                 '}';
     }
 }

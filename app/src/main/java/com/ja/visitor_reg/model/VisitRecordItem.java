@@ -1,21 +1,24 @@
 package com.ja.visitor_reg.model;
 
 public class VisitRecordItem {
-    private String visitName;
-    private String visitedName;
-    private String idNum;
-    private String visitPhone;
-    private String visitTime;
+    private String visitName;//来访人
+    private String visitedName;//被访人
+    private String idNum;//证件号码
+    private String visitPhone;//来访电话
+    private String visitTime;//来访时间
+    private Long   visitId;//来访信息id
 
     public VisitRecordItem() {
     }
 
-    public VisitRecordItem(String visitName, String visitedName, String idNum, String visitPhone, String visitTime) {
+    public VisitRecordItem(String visitName, String visitedName, String idNum, String visitPhone, String visitTime,
+                           Long visitId) {
         this.visitName = visitName;
         this.visitedName = visitedName;
         this.idNum = idNum;
         this.visitPhone = visitPhone;
         this.visitTime = visitTime;
+        this.visitId = visitId;
     }
 
     public String getVisitName() {
@@ -58,6 +61,14 @@ public class VisitRecordItem {
         this.visitTime = visitTime;
     }
 
+    public Long getVisitId() {
+        return visitId;
+    }
+
+    public void setVisitId(Long visitId) {
+        this.visitId = visitId;
+    }
+
     @Override
     public String toString() {
         return "VisitRecordItem{" +
@@ -66,6 +77,7 @@ public class VisitRecordItem {
                 ", idNum='" + idNum + '\'' +
                 ", visitPhone='" + visitPhone + '\'' +
                 ", visitTime='" + visitTime + '\'' +
+                ", visitId=" + visitId +
                 '}';
     }
 }

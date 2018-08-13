@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+/**
+ * app升级服务
+ */
 public class AppUpgradeService extends Service {
     public AppUpgradeService() {
     }

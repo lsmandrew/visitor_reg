@@ -1,9 +1,7 @@
 package com.ja.visitor_reg.ui.fragment;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -25,7 +23,6 @@ import com.ja.visitor_reg.adapter.CauseAdapter;
 import com.ja.visitor_reg.adapter.CertTypeAdapter;
 import com.ja.visitor_reg.adapter.SexTypeAdapter;
 import com.ja.visitor_reg.adapter.VisitorInInfoAdapter;
-import com.ja.visitor_reg.api.HttpApi;
 import com.ja.visitor_reg.common.base.BaseFragment;
 import com.ja.visitor_reg.common.util.BitmapUtil;
 import com.ja.visitor_reg.common.util.DateUtil;
@@ -44,6 +41,7 @@ import com.ja.visitor_reg.model.SexTypeItem;
 import com.ja.visitor_reg.model.VdInfoItem;
 import com.ja.visitor_reg.model.VisitInInfoItem;
 import com.ja.visitor_reg.task.DBTask;
+import com.ja.visitor_reg.task.HttpTask;
 import com.ja.visitor_reg.task.IDCardTask;
 import com.ja.visitor_reg.ui.camera.CameraView;
 import com.ja.visitor_reg.ui.dialog.VdInfoDialog;
@@ -171,8 +169,8 @@ public class VisitorInFragment extends BaseFragment {
 
         });
         //cert type
-        mCertTypeList.add(new CertTypeItem("身份证"));
-        mCertTypeList.add(new CertTypeItem("其他"));
+        //mCertTypeList.add(new CertTypeItem("身份证"));
+        //mCertTypeList.add(new CertTypeItem("其他"));
         mCertAdapter = new CertTypeAdapter(mContext, mCertTypeList);
         mSpCertType.setAdapter(mCertAdapter);
         //sex type
@@ -190,41 +188,37 @@ public class VisitorInFragment extends BaseFragment {
         mRecyVisitIn.setLayoutManager(layoutManager);
         mVisitInAdapter = new VisitorInInfoAdapter(mVisitInList);
         mRecyVisitIn.setAdapter(mVisitInAdapter);
-        //query
-        new AsyncTask<Void, Integer, Boolean>() {
-            private RESP_DICT mDict;
-
+        //query cause type
+        mCauseTypeList.clear();
+        new HttpTask().start_Query_CauseType(new HttpTask.onQueryDictResultListener() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                //根据手机尾号查
-                HttpApi httpApi = new HttpApi();
-                String type = "causeofvisit";
-                mDict = httpApi.getDict_Request(type, 2);
-                if (null != mDict) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result) {
-                super.onPostExecute(result);
-                if (result) {
-                    for (RESP_DICT.ListItem item : mDict.getList()) {
-                        mCauseTypeList.add(new CauseTypeItem(item.getName()));
+            public void onQueryDictResult(RESP_DICT resp_dict) {
+                if (null != resp_dict) {
+                    for (RESP_DICT.ListItem item : resp_dict.getList()) {
+                        mCauseTypeList.add(new CauseTypeItem(item.getName(), item.getCode()));
                     }
                     mCauseAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(mContext, "查询字典失败", Toast.LENGTH_SHORT);
                 }
             }
-        }.execute();
+        });
+        //query cert type
+        mCertTypeList.clear();
+        new HttpTask().start_Query_CertType(new HttpTask.onQueryDictResultListener() {
+            @Override
+            public void onQueryDictResult(RESP_DICT resp_dict) {
+                if (null != resp_dict) {
+                    for (RESP_DICT.ListItem item : resp_dict.getList()) {
+                        mCertTypeList.add(new CertTypeItem(item.getName(), item.getCode()));
+                    }
+                    mCertAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(mContext, "查询字典失败", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+
     }
 
 
@@ -355,36 +349,24 @@ public class VisitorInFragment extends BaseFragment {
             Toast.makeText(mContext, "请输入被访者", Toast.LENGTH_SHORT).show();
             return;
         }
+        //author card
         AUTHOR_CARD author_card = new AUTHOR_CARD();
         author_card.setCardNum("0102030405060708");
-        author_card.setVieweeId(mEventEntity.getIntervieweeId());
         author_card.setDepId(mEventEntity.getDeparmentId());
+        author_card.setType((long) 0);
+        author_card.setVieweeId(mEventEntity.getIntervieweeId());
         author_card.setVisitorIdNum(strIdCode);
         Logger.d("Author Card= " + author_card);
-
-        new AsyncTask<AUTHOR_CARD,Integer,Boolean>(){
+        new HttpTask().start_Author_Card(author_card, new HttpTask.onAuthorCardResultListener() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-            }
-
-            @Override
-            protected Boolean doInBackground(AUTHOR_CARD... args) {
-                HttpApi client = new HttpApi();
-                return client.authorCard_Request(args[0], 2000);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result) {
-                super.onPostExecute(result);
+            public void onAuthorCardResult(Boolean result) {
                 if (result) {
                     Toast.makeText(mContext, "授权成功", Toast.LENGTH_SHORT).show();
-                } else {
+                }else {
                     Toast.makeText(mContext, "授权失败", Toast.LENGTH_SHORT).show();
                 }
             }
-        }.execute(author_card);
+        });
     }
 
     @OnClick(R.id.btn_print_qr)

@@ -9,4 +9,8 @@
     <color name="vdinfo_focus">#FF0000</color>
     <color name="vdinfo_press">#FF0000</color>
     <color name="vdinfo_normal">#FFFFFF</color>
+    <color name="out_focus">#00FF00</color>
+    <color name="out_press">#00FF00</color>
+    <color name="out_normal">#FFFFFF</color>
+
 </resources>

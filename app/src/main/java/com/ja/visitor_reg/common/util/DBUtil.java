@@ -7,6 +7,7 @@ import com.ja.visitor_reg.greendao.VisitEventEntityDao;
 import com.ja.visitor_reg.greendao.VisitInfoEntityDao;
 import com.orhanobut.logger.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,7 +66,44 @@ public class DBUtil {
                 .where(VisitInfoEntityDao.Properties.Out_time.isNull())
                 .build().list();
 
-        Logger.d("query visit reocrd");
+        Logger.d("query visit reocrd count=" + list.size());
         return list;
+    }
+
+    /**
+     * 签退更新来访信息
+     * @param mVisitId
+     */
+    public void update_SignOut(Long mVisitId, Date outDate) {
+        //query
+        List<VisitInfoEntity> list = null;
+        list = mVisitInfoDao.queryBuilder()
+                .where(VisitInfoEntityDao.Properties.Id.eq(mVisitId))
+                .limit(1)
+                .build().list();
+
+        //update
+        for (VisitInfoEntity item : list) {
+            item.setOut_time(outDate);
+            mVisitInfoDao.update(item);
+        }
+        Logger.d("update update_SignOut id: " + mVisitId);
+    }
+
+    /**
+     * 查询未上传的来访时间查询
+     * @param limit 查询条数
+     * @return list
+     */
+    public List<VisitEventEntity> query_NotUploadEvent(int limit) {
+        //query
+        List<VisitEventEntity> list = null;
+        list = mEventDao.queryBuilder()
+                .where(VisitEventEntityDao.Properties.Is_upload.isNull())
+                .limit(1)
+                .build().list();
+
+        Logger.d("query event not upload count= " + list.size());
+        return  list;
     }
 }

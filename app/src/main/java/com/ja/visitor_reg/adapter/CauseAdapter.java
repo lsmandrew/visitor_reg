@@ -39,14 +39,14 @@ public class CauseAdapter extends BaseAdapter {
         View view;
 
         if (null == convertView) {
-            TextView textView = new TextView(mContext);//new
-            textView.setTextSize(20);
-            CauseTypeItem item = mCauseTypeList.get(position);
-            textView.setText(item.getNmae());
-            view = textView;
+            view = new TextView(mContext);//new
         } else {
             view = convertView;
         }
+        TextView textView = (TextView) view;
+        textView.setTextSize(25);
+        CauseTypeItem item = mCauseTypeList.get(position);
+        textView.setText(item.getName());
         return view;
     }
 }

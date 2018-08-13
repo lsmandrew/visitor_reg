@@ -10,9 +10,11 @@ import android.os.Message;
  * 长连接服务
  */
 public class LongConnService extends Service {
+
+    private Thread mLongThread = null;
+
     private static  final int CMD_LONG_START = 0x10;
     private static  final int CMD_LONG_END = 0x11;
-    private Thread longThread = null;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -32,14 +34,14 @@ public class LongConnService extends Service {
     });
 
     private void CloseForce_LongThread() {
-        if ((null != longThread) && longThread.isAlive()){
-            longThread.interrupt();
+        if ((null != mLongThread) && mLongThread.isAlive()){
+            mLongThread.interrupt();
         }
-        longThread = null;
+        mLongThread = null;
     }
 
     private void Start_LongThread() {
-        longThread = new Thread(new Runnable() {
+        mLongThread = new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -57,7 +59,7 @@ public class LongConnService extends Service {
 
             }
         });
-        longThread.start();
+        mLongThread.start();
     }
 
     public LongConnService() {
@@ -71,14 +73,14 @@ public class LongConnService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //get some info
+
         sendMsg(handler, CMD_LONG_START, 500);
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        sendMsg(handler, CMD_LONG_END, 500);
+        sendMsg(handler, CMD_LONG_END, 0);
         super.onDestroy();
     }
 
