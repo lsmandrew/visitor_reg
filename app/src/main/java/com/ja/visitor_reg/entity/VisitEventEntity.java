@@ -57,39 +57,47 @@ import java.util.Date;
 public class VisitEventEntity {
     @Id(autoincrement = true)
     private Long id;//主键
+    private Long serverId;//服务器id（上传用）
     private Long causeId;//来访事由id
     private Long intervieweeId;//受访者id
     private Long shifitId;//班次id(保安)
     @Transient
-    private Long deparmentId;//部门id（临时）
+    private Long deparmentId;//部门id（temp）
+    @Transient
+    private String deparmentName;//部门名(temp)
     private Long deviceId;//登记设备
     private Integer visitorCount;//来访人数
     private Date insetTime;//事件时间
+    private Integer isOrder;//是否预约
+    private String orderPhone;//预约电话
     private Integer is_upload;//是否已上传(0未,1已)
 
-    public VisitEventEntity() {
-    }
-
-
-    @Generated(hash = 549618020)
-    public VisitEventEntity(Long id, Long causeId, Long intervieweeId,
-                            Long shifitId, Long deviceId, Integer visitorCount, Date insetTime,
-                            Integer is_upload) {
+    @Generated(hash = 799079818)
+    public VisitEventEntity(Long id, Long serverId, Long causeId,
+                            Long intervieweeId, Long shifitId, Long deviceId, Integer visitorCount,
+                            Date insetTime, Integer isOrder, String orderPhone, Integer is_upload) {
         this.id = id;
+        this.serverId = serverId;
         this.causeId = causeId;
         this.intervieweeId = intervieweeId;
         this.shifitId = shifitId;
         this.deviceId = deviceId;
         this.visitorCount = visitorCount;
         this.insetTime = insetTime;
+        this.isOrder = isOrder;
+        this.orderPhone = orderPhone;
         this.is_upload = is_upload;
     }
 
+    @Generated(hash = 1078591568)
+    public VisitEventEntity() {
+    }
 
     @Override
     public String toString() {
         return "VisitEventEntity{" +
                 "id=" + id +
+                ", serverId=" + serverId +
                 ", causeId=" + causeId +
                 ", intervieweeId=" + intervieweeId +
                 ", shifitId=" + shifitId +
@@ -97,8 +105,98 @@ public class VisitEventEntity {
                 ", deviceId=" + deviceId +
                 ", visitorCount=" + visitorCount +
                 ", insetTime=" + insetTime +
+                ", isOrder=" + isOrder +
+                ", orderPhone='" + orderPhone + '\'' +
                 ", is_upload=" + is_upload +
                 '}';
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getServerId() {
+        return this.serverId;
+    }
+
+    public void setServerId(Long serverId) {
+        this.serverId = serverId;
+    }
+
+    public Long getCauseId() {
+        return this.causeId;
+    }
+
+    public void setCauseId(Long causeId) {
+        this.causeId = causeId;
+    }
+
+    public Long getIntervieweeId() {
+        return this.intervieweeId;
+    }
+
+    public void setIntervieweeId(Long intervieweeId) {
+        this.intervieweeId = intervieweeId;
+    }
+
+    public Long getShifitId() {
+        return this.shifitId;
+    }
+
+    public void setShifitId(Long shifitId) {
+        this.shifitId = shifitId;
+    }
+
+    public Long getDeviceId() {
+        return this.deviceId;
+    }
+
+    public void setDeviceId(Long deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public Integer getVisitorCount() {
+        return this.visitorCount;
+    }
+
+    public void setVisitorCount(Integer visitorCount) {
+        this.visitorCount = visitorCount;
+    }
+
+    public Date getInsetTime() {
+        return this.insetTime;
+    }
+
+    public void setInsetTime(Date insetTime) {
+        this.insetTime = insetTime;
+    }
+
+    public Integer getIsOrder() {
+        return this.isOrder;
+    }
+
+    public void setIsOrder(Integer isOrder) {
+        this.isOrder = isOrder;
+    }
+
+    public String getOrderPhone() {
+        return this.orderPhone;
+    }
+
+    public void setOrderPhone(String orderPhone) {
+        this.orderPhone = orderPhone;
+    }
+
+    public Integer getIs_upload() {
+        return this.is_upload;
+    }
+
+    public void setIs_upload(Integer is_upload) {
+        this.is_upload = is_upload;
     }
 
     public Long getDeparmentId() {
@@ -107,84 +205,5 @@ public class VisitEventEntity {
 
     public void setDeparmentId(Long deparmentId) {
         this.deparmentId = deparmentId;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public Long getCauseId() {
-        return this.causeId;
-    }
-
-
-    public void setCauseId(Long causeId) {
-        this.causeId = causeId;
-    }
-
-
-    public Long getIntervieweeId() {
-        return this.intervieweeId;
-    }
-
-
-    public void setIntervieweeId(Long intervieweeId) {
-        this.intervieweeId = intervieweeId;
-    }
-
-
-    public Long getShifitId() {
-        return this.shifitId;
-    }
-
-
-    public void setShifitId(Long shifitId) {
-        this.shifitId = shifitId;
-    }
-
-
-    public Long getDeviceId() {
-        return this.deviceId;
-    }
-
-
-    public void setDeviceId(Long deviceId) {
-        this.deviceId = deviceId;
-    }
-
-
-    public Integer getVisitorCount() {
-        return this.visitorCount;
-    }
-
-
-    public void setVisitorCount(Integer visitorCount) {
-        this.visitorCount = visitorCount;
-    }
-
-
-    public Date getInsetTime() {
-        return this.insetTime;
-    }
-
-
-    public void setInsetTime(Date insetTime) {
-        this.insetTime = insetTime;
-    }
-
-
-    public Integer getIs_upload() {
-        return this.is_upload;
-    }
-
-
-    public void setIs_upload(Integer is_upload) {
-        this.is_upload = is_upload;
     }
 }

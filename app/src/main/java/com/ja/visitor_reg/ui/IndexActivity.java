@@ -8,6 +8,8 @@ import android.widget.RadioGroup;
 import com.ja.visitor_reg.R;
 import com.ja.visitor_reg.common.base.BaseActivity;
 import com.ja.visitor_reg.common.base.BaseFragment;
+import com.ja.visitor_reg.common.util.CallerTool;
+import com.ja.visitor_reg.serve.UploadService;
 import com.ja.visitor_reg.ui.fragment.MoreFragment;
 import com.ja.visitor_reg.ui.fragment.QueryInfoFragment;
 import com.ja.visitor_reg.ui.fragment.VisitorBookFragment;
@@ -36,6 +38,13 @@ public class IndexActivity extends BaseActivity {
         initFragment();
         //bind listener
         bindListener();
+        //server
+        start_server();
+    }
+
+    private void start_server() {
+        //开启副屏服务
+        CallerTool.Start_Service(this, UploadService.class);
     }
 
 

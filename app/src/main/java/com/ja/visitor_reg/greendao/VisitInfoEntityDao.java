@@ -1,13 +1,18 @@
 package com.ja.visitor_reg.greendao;
 
+import java.util.List;
+import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+
+import com.ja.visitor_reg.entity.VisitEventEntity;
 
 import com.ja.visitor_reg.entity.VisitInfoEntity;
 
@@ -25,26 +30,33 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Visitor_name = new Property(1, String.class, "visitor_name", false, "VISITOR_NAME");
-        public final static Property Visit_event_id = new Property(2, Long.class, "visit_event_id", false, "VISIT_EVENT_ID");
-        public final static Property Id_numer = new Property(3, String.class, "id_numer", false, "ID_NUMER");
-        public final static Property Sex = new Property(4, String.class, "sex", false, "SEX");
-        public final static Property Book_phone = new Property(5, String.class, "book_phone", false, "BOOK_PHONE");
-        public final static Property Deparment = new Property(6, String.class, "deparment", false, "DEPARMENT");
-        public final static Property Goods = new Property(7, String.class, "goods", false, "GOODS");
-        public final static Property Car_plate = new Property(8, String.class, "car_plate", false, "CAR_PLATE");
-        public final static Property Img_head = new Property(9, String.class, "img_head", false, "IMG_HEAD");
-        public final static Property Img_portrait = new Property(10, String.class, "img_portrait", false, "IMG_PORTRAIT");
-        public final static Property Img_cert = new Property(11, String.class, "img_cert", false, "IMG_CERT");
-        public final static Property Img_goods = new Property(12, String.class, "img_goods", false, "IMG_GOODS");
-        public final static Property IcNumber = new Property(13, String.class, "icNumber", false, "IC_NUMBER");
-        public final static Property PhysicsNumber = new Property(14, String.class, "physicsNumber", false, "PHYSICS_NUMBER");
-        public final static Property In_time = new Property(15, java.util.Date.class, "in_time", false, "IN_TIME");
-        public final static Property Out_time = new Property(16, java.util.Date.class, "out_time", false, "OUT_TIME");
-        public final static Property System_id = new Property(17, String.class, "system_id", false, "SYSTEM_ID");
-        public final static Property Is_upload_in = new Property(18, Integer.class, "is_upload_in", false, "IS_UPLOAD_IN");
-        public final static Property Is_upload_out = new Property(19, Integer.class, "is_upload_out", false, "IS_UPLOAD_OUT");
+        public final static Property Visit_event_id = new Property(1, Long.class, "visit_event_id", false, "VISIT_EVENT_ID");
+        public final static Property Server_id = new Property(2, Long.class, "server_id", false, "SERVER_ID");
+        public final static Property Visitor_name = new Property(3, String.class, "visitor_name", false, "VISITOR_NAME");
+        public final static Property Sex_type = new Property(4, String.class, "sex_type", false, "SEX_TYPE");
+        public final static Property Birthday = new Property(5, java.util.Date.class, "birthday", false, "BIRTHDAY");
+        public final static Property Adress = new Property(6, String.class, "adress", false, "ADRESS");
+        public final static Property Nation = new Property(7, String.class, "nation", false, "NATION");
+        public final static Property Cert_type = new Property(8, String.class, "cert_type", false, "CERT_TYPE");
+        public final static Property Id_numer = new Property(9, String.class, "id_numer", false, "ID_NUMER");
+        public final static Property Phone = new Property(10, String.class, "phone", false, "PHONE");
+        public final static Property Company = new Property(11, String.class, "company", false, "COMPANY");
+        public final static Property Goods = new Property(12, String.class, "goods", false, "GOODS");
+        public final static Property Car_number = new Property(13, String.class, "car_number", false, "CAR_NUMBER");
+        public final static Property Img_head = new Property(14, String.class, "img_head", false, "IMG_HEAD");
+        public final static Property Img_portrait = new Property(15, String.class, "img_portrait", false, "IMG_PORTRAIT");
+        public final static Property Img_cert = new Property(16, String.class, "img_cert", false, "IMG_CERT");
+        public final static Property Img_goods = new Property(17, String.class, "img_goods", false, "IMG_GOODS");
+        public final static Property Ic_number = new Property(18, String.class, "ic_number", false, "IC_NUMBER");
+        public final static Property Physics_number = new Property(19, String.class, "physics_number", false, "PHYSICS_NUMBER");
+        public final static Property In_time = new Property(20, java.util.Date.class, "in_time", false, "IN_TIME");
+        public final static Property Out_time = new Property(21, java.util.Date.class, "out_time", false, "OUT_TIME");
+        public final static Property System_id = new Property(22, String.class, "system_id", false, "SYSTEM_ID");
+        public final static Property Is_upload_in = new Property(23, Integer.class, "is_upload_in", false, "IS_UPLOAD_IN");
+        public final static Property Is_upload_out = new Property(24, Integer.class, "is_upload_out", false, "IS_UPLOAD_OUT");
     }
+
+    private DaoSession daoSession;
 
 
     public VisitInfoEntityDao(DaoConfig config) {
@@ -53,6 +65,7 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
     
     public VisitInfoEntityDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -60,25 +73,30 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"VisitInfo_Table\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"VISITOR_NAME\" TEXT," + // 1: visitor_name
-                "\"VISIT_EVENT_ID\" INTEGER," + // 2: visit_event_id
-                "\"ID_NUMER\" TEXT," + // 3: id_numer
-                "\"SEX\" TEXT," + // 4: sex
-                "\"BOOK_PHONE\" TEXT," + // 5: book_phone
-                "\"DEPARMENT\" TEXT," + // 6: deparment
-                "\"GOODS\" TEXT," + // 7: goods
-                "\"CAR_PLATE\" TEXT," + // 8: car_plate
-                "\"IMG_HEAD\" TEXT," + // 9: img_head
-                "\"IMG_PORTRAIT\" TEXT," + // 10: img_portrait
-                "\"IMG_CERT\" TEXT," + // 11: img_cert
-                "\"IMG_GOODS\" TEXT," + // 12: img_goods
-                "\"IC_NUMBER\" TEXT," + // 13: icNumber
-                "\"PHYSICS_NUMBER\" TEXT," + // 14: physicsNumber
-                "\"IN_TIME\" INTEGER," + // 15: in_time
-                "\"OUT_TIME\" INTEGER," + // 16: out_time
-                "\"SYSTEM_ID\" TEXT," + // 17: system_id
-                "\"IS_UPLOAD_IN\" INTEGER," + // 18: is_upload_in
-                "\"IS_UPLOAD_OUT\" INTEGER);"); // 19: is_upload_out
+                "\"VISIT_EVENT_ID\" INTEGER," + // 1: visit_event_id
+                "\"SERVER_ID\" INTEGER," + // 2: server_id
+                "\"VISITOR_NAME\" TEXT," + // 3: visitor_name
+                "\"SEX_TYPE\" TEXT," + // 4: sex_type
+                "\"BIRTHDAY\" INTEGER," + // 5: birthday
+                "\"ADRESS\" TEXT," + // 6: adress
+                "\"NATION\" TEXT," + // 7: nation
+                "\"CERT_TYPE\" TEXT," + // 8: cert_type
+                "\"ID_NUMER\" TEXT," + // 9: id_numer
+                "\"PHONE\" TEXT," + // 10: phone
+                "\"COMPANY\" TEXT," + // 11: company
+                "\"GOODS\" TEXT," + // 12: goods
+                "\"CAR_NUMBER\" TEXT," + // 13: car_number
+                "\"IMG_HEAD\" TEXT," + // 14: img_head
+                "\"IMG_PORTRAIT\" TEXT," + // 15: img_portrait
+                "\"IMG_CERT\" TEXT," + // 16: img_cert
+                "\"IMG_GOODS\" TEXT," + // 17: img_goods
+                "\"IC_NUMBER\" TEXT," + // 18: ic_number
+                "\"PHYSICS_NUMBER\" TEXT," + // 19: physics_number
+                "\"IN_TIME\" INTEGER," + // 20: in_time
+                "\"OUT_TIME\" INTEGER," + // 21: out_time
+                "\"SYSTEM_ID\" TEXT," + // 22: system_id
+                "\"IS_UPLOAD_IN\" INTEGER," + // 23: is_upload_in
+                "\"IS_UPLOAD_OUT\" INTEGER);"); // 24: is_upload_out
     }
 
     /** Drops the underlying database table. */
@@ -96,99 +114,124 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
             stmt.bindLong(1, id);
         }
  
-        String visitor_name = entity.getVisitor_name();
-        if (visitor_name != null) {
-            stmt.bindString(2, visitor_name);
-        }
- 
         Long visit_event_id = entity.getVisit_event_id();
         if (visit_event_id != null) {
-            stmt.bindLong(3, visit_event_id);
+            stmt.bindLong(2, visit_event_id);
+        }
+ 
+        Long server_id = entity.getServer_id();
+        if (server_id != null) {
+            stmt.bindLong(3, server_id);
+        }
+ 
+        String visitor_name = entity.getVisitor_name();
+        if (visitor_name != null) {
+            stmt.bindString(4, visitor_name);
+        }
+ 
+        String sex_type = entity.getSex_type();
+        if (sex_type != null) {
+            stmt.bindString(5, sex_type);
+        }
+ 
+        java.util.Date birthday = entity.getBirthday();
+        if (birthday != null) {
+            stmt.bindLong(6, birthday.getTime());
+        }
+ 
+        String adress = entity.getAdress();
+        if (adress != null) {
+            stmt.bindString(7, adress);
+        }
+ 
+        String nation = entity.getNation();
+        if (nation != null) {
+            stmt.bindString(8, nation);
+        }
+ 
+        String cert_type = entity.getCert_type();
+        if (cert_type != null) {
+            stmt.bindString(9, cert_type);
         }
  
         String id_numer = entity.getId_numer();
         if (id_numer != null) {
-            stmt.bindString(4, id_numer);
+            stmt.bindString(10, id_numer);
         }
  
-        String sex = entity.getSex();
-        if (sex != null) {
-            stmt.bindString(5, sex);
+        String phone = entity.getPhone();
+        if (phone != null) {
+            stmt.bindString(11, phone);
         }
  
-        String book_phone = entity.getBook_phone();
-        if (book_phone != null) {
-            stmt.bindString(6, book_phone);
-        }
- 
-        String deparment = entity.getDeparment();
-        if (deparment != null) {
-            stmt.bindString(7, deparment);
+        String company = entity.getCompany();
+        if (company != null) {
+            stmt.bindString(12, company);
         }
  
         String goods = entity.getGoods();
         if (goods != null) {
-            stmt.bindString(8, goods);
+            stmt.bindString(13, goods);
         }
  
-        String car_plate = entity.getCar_plate();
-        if (car_plate != null) {
-            stmt.bindString(9, car_plate);
+        String car_number = entity.getCar_number();
+        if (car_number != null) {
+            stmt.bindString(14, car_number);
         }
  
         String img_head = entity.getImg_head();
         if (img_head != null) {
-            stmt.bindString(10, img_head);
+            stmt.bindString(15, img_head);
         }
  
         String img_portrait = entity.getImg_portrait();
         if (img_portrait != null) {
-            stmt.bindString(11, img_portrait);
+            stmt.bindString(16, img_portrait);
         }
  
         String img_cert = entity.getImg_cert();
         if (img_cert != null) {
-            stmt.bindString(12, img_cert);
+            stmt.bindString(17, img_cert);
         }
  
         String img_goods = entity.getImg_goods();
         if (img_goods != null) {
-            stmt.bindString(13, img_goods);
+            stmt.bindString(18, img_goods);
         }
  
-        String icNumber = entity.getIcNumber();
-        if (icNumber != null) {
-            stmt.bindString(14, icNumber);
+        String ic_number = entity.getIc_number();
+        if (ic_number != null) {
+            stmt.bindString(19, ic_number);
         }
  
-        String physicsNumber = entity.getPhysicsNumber();
-        if (physicsNumber != null) {
-            stmt.bindString(15, physicsNumber);
+        String physics_number = entity.getPhysics_number();
+        if (physics_number != null) {
+            stmt.bindString(20, physics_number);
         }
  
         java.util.Date in_time = entity.getIn_time();
         if (in_time != null) {
-            stmt.bindLong(16, in_time.getTime());
+            stmt.bindLong(21, in_time.getTime());
         }
  
         java.util.Date out_time = entity.getOut_time();
         if (out_time != null) {
-            stmt.bindLong(17, out_time.getTime());
+            stmt.bindLong(22, out_time.getTime());
         }
  
         String system_id = entity.getSystem_id();
         if (system_id != null) {
-            stmt.bindString(18, system_id);
+            stmt.bindString(23, system_id);
         }
  
         Integer is_upload_in = entity.getIs_upload_in();
         if (is_upload_in != null) {
-            stmt.bindLong(19, is_upload_in);
+            stmt.bindLong(24, is_upload_in);
         }
  
         Integer is_upload_out = entity.getIs_upload_out();
         if (is_upload_out != null) {
-            stmt.bindLong(20, is_upload_out);
+            stmt.bindLong(25, is_upload_out);
         }
     }
 
@@ -201,100 +244,131 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
             stmt.bindLong(1, id);
         }
  
-        String visitor_name = entity.getVisitor_name();
-        if (visitor_name != null) {
-            stmt.bindString(2, visitor_name);
-        }
- 
         Long visit_event_id = entity.getVisit_event_id();
         if (visit_event_id != null) {
-            stmt.bindLong(3, visit_event_id);
+            stmt.bindLong(2, visit_event_id);
+        }
+ 
+        Long server_id = entity.getServer_id();
+        if (server_id != null) {
+            stmt.bindLong(3, server_id);
+        }
+ 
+        String visitor_name = entity.getVisitor_name();
+        if (visitor_name != null) {
+            stmt.bindString(4, visitor_name);
+        }
+ 
+        String sex_type = entity.getSex_type();
+        if (sex_type != null) {
+            stmt.bindString(5, sex_type);
+        }
+ 
+        java.util.Date birthday = entity.getBirthday();
+        if (birthday != null) {
+            stmt.bindLong(6, birthday.getTime());
+        }
+ 
+        String adress = entity.getAdress();
+        if (adress != null) {
+            stmt.bindString(7, adress);
+        }
+ 
+        String nation = entity.getNation();
+        if (nation != null) {
+            stmt.bindString(8, nation);
+        }
+ 
+        String cert_type = entity.getCert_type();
+        if (cert_type != null) {
+            stmt.bindString(9, cert_type);
         }
  
         String id_numer = entity.getId_numer();
         if (id_numer != null) {
-            stmt.bindString(4, id_numer);
+            stmt.bindString(10, id_numer);
         }
  
-        String sex = entity.getSex();
-        if (sex != null) {
-            stmt.bindString(5, sex);
+        String phone = entity.getPhone();
+        if (phone != null) {
+            stmt.bindString(11, phone);
         }
  
-        String book_phone = entity.getBook_phone();
-        if (book_phone != null) {
-            stmt.bindString(6, book_phone);
-        }
- 
-        String deparment = entity.getDeparment();
-        if (deparment != null) {
-            stmt.bindString(7, deparment);
+        String company = entity.getCompany();
+        if (company != null) {
+            stmt.bindString(12, company);
         }
  
         String goods = entity.getGoods();
         if (goods != null) {
-            stmt.bindString(8, goods);
+            stmt.bindString(13, goods);
         }
  
-        String car_plate = entity.getCar_plate();
-        if (car_plate != null) {
-            stmt.bindString(9, car_plate);
+        String car_number = entity.getCar_number();
+        if (car_number != null) {
+            stmt.bindString(14, car_number);
         }
  
         String img_head = entity.getImg_head();
         if (img_head != null) {
-            stmt.bindString(10, img_head);
+            stmt.bindString(15, img_head);
         }
  
         String img_portrait = entity.getImg_portrait();
         if (img_portrait != null) {
-            stmt.bindString(11, img_portrait);
+            stmt.bindString(16, img_portrait);
         }
  
         String img_cert = entity.getImg_cert();
         if (img_cert != null) {
-            stmt.bindString(12, img_cert);
+            stmt.bindString(17, img_cert);
         }
  
         String img_goods = entity.getImg_goods();
         if (img_goods != null) {
-            stmt.bindString(13, img_goods);
+            stmt.bindString(18, img_goods);
         }
  
-        String icNumber = entity.getIcNumber();
-        if (icNumber != null) {
-            stmt.bindString(14, icNumber);
+        String ic_number = entity.getIc_number();
+        if (ic_number != null) {
+            stmt.bindString(19, ic_number);
         }
  
-        String physicsNumber = entity.getPhysicsNumber();
-        if (physicsNumber != null) {
-            stmt.bindString(15, physicsNumber);
+        String physics_number = entity.getPhysics_number();
+        if (physics_number != null) {
+            stmt.bindString(20, physics_number);
         }
  
         java.util.Date in_time = entity.getIn_time();
         if (in_time != null) {
-            stmt.bindLong(16, in_time.getTime());
+            stmt.bindLong(21, in_time.getTime());
         }
  
         java.util.Date out_time = entity.getOut_time();
         if (out_time != null) {
-            stmt.bindLong(17, out_time.getTime());
+            stmt.bindLong(22, out_time.getTime());
         }
  
         String system_id = entity.getSystem_id();
         if (system_id != null) {
-            stmt.bindString(18, system_id);
+            stmt.bindString(23, system_id);
         }
  
         Integer is_upload_in = entity.getIs_upload_in();
         if (is_upload_in != null) {
-            stmt.bindLong(19, is_upload_in);
+            stmt.bindLong(24, is_upload_in);
         }
  
         Integer is_upload_out = entity.getIs_upload_out();
         if (is_upload_out != null) {
-            stmt.bindLong(20, is_upload_out);
+            stmt.bindLong(25, is_upload_out);
         }
+    }
+
+    @Override
+    protected final void attachEntity(VisitInfoEntity entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     @Override
@@ -306,25 +380,30 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
     public VisitInfoEntity readEntity(Cursor cursor, int offset) {
         VisitInfoEntity entity = new VisitInfoEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // visitor_name
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // visit_event_id
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // id_numer
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sex
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // book_phone
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // deparment
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // goods
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // car_plate
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // img_head
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // img_portrait
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // img_cert
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // img_goods
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // icNumber
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // physicsNumber
-            cursor.isNull(offset + 15) ? null : new java.util.Date(cursor.getLong(offset + 15)), // in_time
-            cursor.isNull(offset + 16) ? null : new java.util.Date(cursor.getLong(offset + 16)), // out_time
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // system_id
-            cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18), // is_upload_in
-            cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19) // is_upload_out
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // visit_event_id
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // server_id
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // visitor_name
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sex_type
+            cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)), // birthday
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // adress
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // nation
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // cert_type
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // id_numer
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // phone
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // company
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // goods
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // car_number
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // img_head
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // img_portrait
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // img_cert
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // img_goods
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // ic_number
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // physics_number
+            cursor.isNull(offset + 20) ? null : new java.util.Date(cursor.getLong(offset + 20)), // in_time
+            cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)), // out_time
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // system_id
+            cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23), // is_upload_in
+            cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24) // is_upload_out
         );
         return entity;
     }
@@ -332,25 +411,30 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
     @Override
     public void readEntity(Cursor cursor, VisitInfoEntity entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setVisitor_name(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setVisit_event_id(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setId_numer(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setSex(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setBook_phone(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDeparment(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setGoods(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setCar_plate(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setImg_head(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setImg_portrait(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setImg_cert(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setImg_goods(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setIcNumber(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setPhysicsNumber(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setIn_time(cursor.isNull(offset + 15) ? null : new java.util.Date(cursor.getLong(offset + 15)));
-        entity.setOut_time(cursor.isNull(offset + 16) ? null : new java.util.Date(cursor.getLong(offset + 16)));
-        entity.setSystem_id(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setIs_upload_in(cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18));
-        entity.setIs_upload_out(cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19));
+        entity.setVisit_event_id(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setServer_id(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setVisitor_name(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setSex_type(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setBirthday(cursor.isNull(offset + 5) ? null : new java.util.Date(cursor.getLong(offset + 5)));
+        entity.setAdress(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setNation(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setCert_type(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setId_numer(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPhone(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCompany(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setGoods(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setCar_number(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setImg_head(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setImg_portrait(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setImg_cert(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setImg_goods(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setIc_number(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setPhysics_number(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setIn_time(cursor.isNull(offset + 20) ? null : new java.util.Date(cursor.getLong(offset + 20)));
+        entity.setOut_time(cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)));
+        entity.setSystem_id(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setIs_upload_in(cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23));
+        entity.setIs_upload_out(cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24));
      }
     
     @Override
@@ -378,4 +462,95 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
         return true;
     }
     
+    private String selectDeep;
+
+    protected String getSelectDeep() {
+        if (selectDeep == null) {
+            StringBuilder builder = new StringBuilder("SELECT ");
+            SqlUtils.appendColumns(builder, "T", getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T0", daoSession.getVisitEventEntityDao().getAllColumns());
+            builder.append(" FROM VisitInfo_Table T");
+            builder.append(" LEFT JOIN VisitEvent_Table T0 ON T.\"VISIT_EVENT_ID\"=T0.\"_id\"");
+            builder.append(' ');
+            selectDeep = builder.toString();
+        }
+        return selectDeep;
+    }
+    
+    protected VisitInfoEntity loadCurrentDeep(Cursor cursor, boolean lock) {
+        VisitInfoEntity entity = loadCurrent(cursor, 0, lock);
+        int offset = getAllColumns().length;
+
+        VisitEventEntity visitEvent = loadCurrentOther(daoSession.getVisitEventEntityDao(), cursor, offset);
+        entity.setVisitEvent(visitEvent);
+
+        return entity;    
+    }
+
+    public VisitInfoEntity loadDeep(Long key) {
+        assertSinglePk();
+        if (key == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder(getSelectDeep());
+        builder.append("WHERE ");
+        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
+        String sql = builder.toString();
+        
+        String[] keyArray = new String[] { key.toString() };
+        Cursor cursor = db.rawQuery(sql, keyArray);
+        
+        try {
+            boolean available = cursor.moveToFirst();
+            if (!available) {
+                return null;
+            } else if (!cursor.isLast()) {
+                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
+            }
+            return loadCurrentDeep(cursor, true);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
+    public List<VisitInfoEntity> loadAllDeepFromCursor(Cursor cursor) {
+        int count = cursor.getCount();
+        List<VisitInfoEntity> list = new ArrayList<VisitInfoEntity>(count);
+        
+        if (cursor.moveToFirst()) {
+            if (identityScope != null) {
+                identityScope.lock();
+                identityScope.reserveRoom(count);
+            }
+            try {
+                do {
+                    list.add(loadCurrentDeep(cursor, false));
+                } while (cursor.moveToNext());
+            } finally {
+                if (identityScope != null) {
+                    identityScope.unlock();
+                }
+            }
+        }
+        return list;
+    }
+    
+    protected List<VisitInfoEntity> loadDeepAllAndCloseCursor(Cursor cursor) {
+        try {
+            return loadAllDeepFromCursor(cursor);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
+    public List<VisitInfoEntity> queryDeep(String where, String... selectionArg) {
+        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
+        return loadDeepAllAndCloseCursor(cursor);
+    }
+ 
 }

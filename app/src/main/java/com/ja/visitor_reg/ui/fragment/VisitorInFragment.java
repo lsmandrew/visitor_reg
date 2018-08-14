@@ -534,6 +534,12 @@ public class VisitorInFragment extends BaseFragment {
             mBtnStartCheckIn.setText("重新登记");
             mEventEntity.setVisitorCount(Integer.parseInt(strCount));
             mEventEntity.setInsetTime(new Date());
+            if (mCBIsBook.isChecked()) {//is book
+                mEventEntity.setIsOrder(1);
+                mEventEntity.setOrderPhone(mEdtBookPhone.getText().toString());
+            } else {
+                mEventEntity.setIsOrder(0);
+            }
             //clear id
             mEventEntity.setId(null);
             //sava db
@@ -576,7 +582,7 @@ public class VisitorInFragment extends BaseFragment {
                     Toast.makeText(mContext, "登记保存成功", Toast.LENGTH_SHORT).show();
                     //update result show
                     mVisitInList.add(0, new VisitInInfoItem(mVisitInfoEntity.getVisitor_name(),
-                            mEdtInterviewee.getText().toString(), mVisitInfoEntity.getBook_phone(),
+                            mEdtInterviewee.getText().toString(), mVisitInfoEntity.getPhone(),
                             DateUtil.getDateTimeFormat(mVisitInfoEntity.getIn_time())));
                     mVisitInAdapter.notifyItemInserted(0);
 
@@ -584,6 +590,7 @@ public class VisitorInFragment extends BaseFragment {
                     Toast.makeText(mContext, "登记保存失败", Toast.LENGTH_SHORT).show();
                 }
                 //clear
+                clear_VisitEntity();
                 ui_ClearData();
 
             }
@@ -608,6 +615,20 @@ public class VisitorInFragment extends BaseFragment {
         mEventEntity.setInsetTime(null);
     }
 
+    private void clear_VisitEntity() {
+        mVisitInfoEntity = null;
+        if (null == mVisitInfoEntity) {
+            mVisitInfoEntity = new VisitInfoEntity();
+        }
+    }
+
+    private void clear_EventEntity() {
+        mEventEntity = null;
+        if (null == mEventEntity) {
+            mEventEntity = new VisitEventEntity();
+        }
+    }
+
     private void ui_ClearData() {
         //clear show
         mEdtIdCode.setText("");
@@ -617,11 +638,7 @@ public class VisitorInFragment extends BaseFragment {
         mEdtGoods.setText("");
         mIvCar.updateNumber("");
         mImgHead.setImageBitmap(null);
-        //clear img
-        mVisitInfoEntity.setImg_cert("");
-        mVisitInfoEntity.setImg_goods("");
-        mVisitInfoEntity.setImg_portrait("");
-        mVisitInfoEntity.setImg_head("");
+
         mEventEntity.setVisitorCount(mEventEntity.getVisitorCount() - 1);
         if (0 == mEventEntity.getVisitorCount()) {
             //clear visitinfo list
@@ -631,10 +648,11 @@ public class VisitorInFragment extends BaseFragment {
                 public void run() {
                     mVisitInList.clear();
                     mVisitInAdapter.notifyDataSetChanged();
+                    //clear
+                    clear_EventEntity();
                     ui_ClearVisitEvent();
                 }
             }, 2000);
-
         }
 
     }
@@ -681,7 +699,7 @@ public class VisitorInFragment extends BaseFragment {
         //性别
         if (null != mSpSexType.getSelectedItem()) {
             SexTypeItem item = (SexTypeItem) mSpSexType.getSelectedItem();
-            visitEntity.setSex(item.getName());
+            visitEntity.setSex_type(item.getName());
         }
         //证件号码
         if (null != mEdtIdCode.getText()) {
@@ -693,18 +711,18 @@ public class VisitorInFragment extends BaseFragment {
         }
         //来访电话
         if (null != mEdtVisitPhone.getText()) {
-            visitEntity.setBook_phone(mEdtVisitPhone.getText().toString());
+            visitEntity.setPhone(mEdtVisitPhone.getText().toString());
         }
         //部门
         if (null != mEdtUnit.getText()) {
-            visitEntity.setDeparment(mEdtUnit.getText().toString());
+            visitEntity.setCompany(mEdtUnit.getText().toString());
         }
         //携带物品
         if (null != mEdtGoods.getText()) {
             visitEntity.setGoods(mEdtGoods.getText().toString());
         }
         //车牌
-        visitEntity.setCar_plate(mIvCar.getNumber());
+        visitEntity.setCar_number(mIvCar.getNumber());
 
         //来访时间
         visitEntity.setIn_time(new Date());

@@ -10,7 +10,11 @@ import com.ja.visitor_reg.json.DISCARD_INFO;
 import com.ja.visitor_reg.json.LOGIN_INFO;
 import com.ja.visitor_reg.json.RESP_DICT;
 import com.ja.visitor_reg.json.RESP_MSG;
+import com.ja.visitor_reg.json.RESP_MSG_EVENT;
+import com.ja.visitor_reg.json.RESP_MSG_VISITOR;
 import com.ja.visitor_reg.json.RESP_VISITEDINFO;
+import com.ja.visitor_reg.json.VISITOR_INFO_UPLOAD;
+import com.ja.visitor_reg.json.VISITOUT_UPLOAD;
 import com.ja.visitor_reg.json.VISIT_EVENT_UPLOAD;
 
 import java.io.File;
@@ -36,7 +40,7 @@ public class HttpApi {
     private static final String TAG = "HttpApi";
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
     private static final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
-    private static String TOKEN = "";
+    public static String TOKEN = "";
 
     /**
      * Login_Request
@@ -429,7 +433,7 @@ public class HttpApi {
      * 上传来访事件
      * @param visitEventUpload 来访事件
      * @param timeout 连接超时
-     * @return true/false
+     * @return int来访事件id <0不正确
      * @requir token
      * post form
      * {
@@ -447,7 +451,8 @@ public class HttpApi {
      * {"msg":"success","code":0,"visitEventId":6}
      * {"msg":"token不能为空","code":500}
      */
-   public boolean upload_VisitEvent(VISIT_EVENT_UPLOAD visitEventUpload, long timeout) {
+   public int upload_VisitEvent(VISIT_EVENT_UPLOAD visitEventUpload, long timeout) {
+       int eventId = -1;
        try {
            String strUrl;
            Response response = null;
@@ -479,18 +484,167 @@ public class HttpApi {
            response = client.newCall(request).execute();
            String strBody = response.body().string();
            Log.d(TAG, "resp: " + strBody);
-           RESP_MSG resp_msg = JSON.parseObject(strBody, RESP_MSG.class);
-           return resp_msg.getMsg().equals("success");
+           RESP_MSG_EVENT resp_msg = JSON.parseObject(strBody, RESP_MSG_EVENT.class);
+           if (null != resp_msg.getVisitEventId()) {
+               eventId = resp_msg.getVisitEventId().intValue();
+           } else if (resp_msg.getMsg().equals("token不能为空")) {//token为空
+               HttpApi.TOKEN = "";
+           }
        } catch (IOException e) {
            e.printStackTrace();
-           return false;
+           eventId = -2;
        } catch (Exception e) {
            e.printStackTrace();
-           return false;
-       } finally {
-           return false;
+           eventId = -3;
        }
+       return eventId;
    }
+
+    /**
+     * 上传来访信息
+     * @param visitor_upload
+     * @return
+     * @require token
+     * post form
+     * {
+     * "birthday": "2018-08-13T02:00:45.242Z",
+     * "carry": "string",
+     * "carryImage": "string",
+     * "censusAddr": "string",
+     * "certificateNum": "string",
+     * "certificateType": "string",
+     * "enterTime": "2018-08-13T02:00:45.242Z",
+     * "eventId": 0,
+     * "headImage": "string",
+     * "icNumber": "string",
+     * "id": 0,
+     * "idHeadImage": "string",
+     * "idImage": "string",
+     * "idScanImage": "string",
+     * "isMain": 0,
+     * "leaveTime": "2018-08-13T02:00:45.242Z",
+     * "nation": "string",
+     * "physicsNumber": "string",
+     * "sex": 0,
+     * "vehicleNumber": "string",
+     * "visitorPhone": "string",
+     * "visitorUnit": "string",
+     * "vistorName": "string"
+     * }
+     * resp
+     * {"msg":"success","code":0,"visitorId":25}
+     */
+    public int upload_VisitInfo(VISITOR_INFO_UPLOAD visitor_upload, long timeout) {
+        int visitId = -1;
+        try {
+            String strUrl;
+            Response response = null;
+            String jsonData = JSON.toJSONString(visitor_upload);
+            Log.d(TAG, "json: " + jsonData);
+            RequestBody postBody = FormBody.create(
+                    MediaType.parse("application/json; charset=utf-8"),
+                    jsonData);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(timeout, TimeUnit.SECONDS)
+                    .build();
+            //packet url
+            SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
+            StringBuilder urlBuilder = new StringBuilder().append("http://")
+                    .append(sp.getStringValue("serIp", ""))
+                    .append(":")
+                    .append(sp.getIntValue("serPort", 0))
+                    .append("/ja-api/api/vistor/visitorSave");
+
+            Log.d(TAG, "upload_VisitInfo url=" + urlBuilder.toString());
+            Request request = new Request.Builder()
+                    .url(urlBuilder.toString())
+                    .header("Accept", "text/html")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("token", TOKEN)
+                    .post(postBody)
+                    .build();
+            //response
+            response = client.newCall(request).execute();
+            String strBody = response.body().string();
+            Log.d(TAG, "resp: " + strBody);
+            RESP_MSG_VISITOR resp_msg = JSON.parseObject(strBody, RESP_MSG_VISITOR.class);
+            if (null != resp_msg.getVisitorId()) {
+                visitId = resp_msg.getVisitorId().intValue();
+            } else if (resp_msg.getMsg().equals("token不能为空")) {//token为空
+                HttpApi.TOKEN = "";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            visitId = -2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            visitId = -3;
+        }
+        return visitId;
+    }
+
+    /**
+     * 上传签退信息
+     * @param visitout_upload 签退信息
+     * @param timeout 连接时间
+     * @return true/false
+     * @require token
+     * post form
+     * {
+     * "id": 0,
+     * "leaveTime": "2018-08-14T06:14:24.950Z"
+     * }
+     * resp
+     *
+     */
+    public boolean upload_VisitOut(VISITOUT_UPLOAD visitout_upload, long timeout) {
+        boolean result = false;
+        try {
+            String strUrl;
+            Response response = null;
+            String jsonData = JSON.toJSONString(visitout_upload);
+            Log.d(TAG, "json: " + jsonData);
+            RequestBody postBody = FormBody.create(
+                    MediaType.parse("application/json; charset=utf-8"),
+                    jsonData);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(timeout, TimeUnit.SECONDS)
+                    .build();
+            //packet url
+            SharedPreferencesUtil sp = SharedPreferencesUtil.getInstance();
+            StringBuilder urlBuilder = new StringBuilder().append("http://")
+                    .append(sp.getStringValue("serIp", ""))
+                    .append(":")
+                    .append(sp.getIntValue("serPort", 0))
+                    .append("/ja-api/api/vistor/visitorLeave");
+
+            Log.d(TAG, "upload_VisitInfo url=" + urlBuilder.toString());
+            Request request = new Request.Builder()
+                    .url(urlBuilder.toString())
+                    .header("Accept", "text/html")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("token", TOKEN)
+                    .post(postBody)
+                    .build();
+            //response
+            response = client.newCall(request).execute();
+            String strBody = response.body().string();
+            Log.d(TAG, "resp: " + strBody);
+            RESP_MSG resp_msg = JSON.parseObject(strBody, RESP_MSG.class);
+            if (resp_msg.getMsg().equals("success")){
+                result = true;
+            }else {
+                result =false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            result = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+        return result;
+    }
 
     /**
      * http上传图片 单张图片
@@ -556,5 +710,7 @@ public class HttpApi {
 
        return true;
    }
+
+
 
 }

@@ -1,8 +1,14 @@
 package com.ja.visitor_reg.entity;
 
+import com.ja.visitor_reg.greendao.DaoSession;
+import com.ja.visitor_reg.greendao.VisitEventEntityDao;
+import com.ja.visitor_reg.greendao.VisitInfoEntityDao;
+
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
 
 import java.util.Date;
 
@@ -55,48 +61,71 @@ import java.util.Date;
 public class VisitInfoEntity {
     @Id(autoincrement = true)
     private Long id;//主键
-    private String visitor_name;//来访者名
     private Long visit_event_id;//来访事件id
+    private Long server_id;//服务器返回id(用于标识)
+    private String visitor_name;//来访者名
+    private String sex_type;//性别
+    private Date birthday;//出生日期
+    private String adress;//地址
+    private String nation;//民族
+    private String cert_type;//证件类型
     private String id_numer;//证件号
-    private String sex;//性别
-    private String book_phone;//预约电话
-    private String deparment;//单位
+    private String phone;//预约电话
+    private String company;//单位
     private String goods;//携带物品(文字描述)
-    private String car_plate;//车牌
+    private String car_number;//车牌
     private String img_head;//头像(图片名)
     private String img_portrait;//人像(图片名)
     private String img_cert;//证件照片(图片名)
     private String img_goods;//携带物品(图片名)
-    private String icNumber;//ic卡号(二维码为虚拟ic卡：ic-4byte后面补零 QR-5byte后面补零)
-    private String physicsNumber;//二代证物理卡号(8byte16位)
+    private String ic_number;//ic卡号(二维码为虚拟ic卡：ic-4byte后面补零 QR-5byte后面补零)
+    private String physics_number;//二代证物理卡号(8byte16位)
     private Date in_time;//登记时间
     private Date out_time;//签退时间
     private String system_id;//记录标识
     private Integer is_upload_in;//登记是否上传(0未,1已)
     private Integer is_upload_out;//退出是否上传(0未,1已)
+    @ToOne(joinProperty = "visit_event_id")
+    VisitEventEntity visitEvent;
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 1560708088)
+    private transient VisitInfoEntityDao myDao;
 
-    @Generated(hash = 768262831)
-    public VisitInfoEntity(Long id, String visitor_name, Long visit_event_id,
-                           String id_numer, String sex, String book_phone, String deparment,
-                           String goods, String car_plate, String img_head, String img_portrait,
-                           String img_cert, String img_goods, String icNumber,
-                           String physicsNumber, Date in_time, Date out_time, String system_id,
-                           Integer is_upload_in, Integer is_upload_out) {
+    @Generated(hash = 746256291)
+    public VisitInfoEntity(Long id, Long visit_event_id, Long server_id,
+                           String visitor_name, String sex_type, Date birthday, String adress,
+                           String nation, String cert_type, String id_numer, String phone,
+                           String company, String goods, String car_number, String img_head,
+                           String img_portrait, String img_cert, String img_goods,
+                           String ic_number, String physics_number, Date in_time, Date out_time,
+                           String system_id, Integer is_upload_in, Integer is_upload_out) {
         this.id = id;
-        this.visitor_name = visitor_name;
         this.visit_event_id = visit_event_id;
+        this.server_id = server_id;
+        this.visitor_name = visitor_name;
+        this.sex_type = sex_type;
+        this.birthday = birthday;
+        this.adress = adress;
+        this.nation = nation;
+        this.cert_type = cert_type;
         this.id_numer = id_numer;
-        this.sex = sex;
-        this.book_phone = book_phone;
-        this.deparment = deparment;
+        this.phone = phone;
+        this.company = company;
         this.goods = goods;
-        this.car_plate = car_plate;
+        this.car_number = car_number;
         this.img_head = img_head;
         this.img_portrait = img_portrait;
         this.img_cert = img_cert;
         this.img_goods = img_goods;
-        this.icNumber = icNumber;
-        this.physicsNumber = physicsNumber;
+        this.ic_number = ic_number;
+        this.physics_number = physics_number;
         this.in_time = in_time;
         this.out_time = out_time;
         this.system_id = system_id;
@@ -108,46 +137,12 @@ public class VisitInfoEntity {
     public VisitInfoEntity() {
     }
 
-    @Override
-    public String toString() {
-        return "VisitInfoEntity{" +
-                "id=" + id +
-                ", visitor_name='" + visitor_name + '\'' +
-                ", visit_event_id=" + visit_event_id +
-                ", id_numer='" + id_numer + '\'' +
-                ", sex='" + sex + '\'' +
-                ", book_phone='" + book_phone + '\'' +
-                ", deparment='" + deparment + '\'' +
-                ", goods='" + goods + '\'' +
-                ", car_plate='" + car_plate + '\'' +
-                ", img_head='" + img_head + '\'' +
-                ", img_portrait='" + img_portrait + '\'' +
-                ", img_cert='" + img_cert + '\'' +
-                ", img_goods='" + img_goods + '\'' +
-                ", icNumber='" + icNumber + '\'' +
-                ", physicsNumber='" + physicsNumber + '\'' +
-                ", in_time=" + in_time +
-                ", out_time=" + out_time +
-                ", system_id='" + system_id + '\'' +
-                ", is_upload_in=" + is_upload_in +
-                ", is_upload_out=" + is_upload_out +
-                '}';
-    }
-
     public Long getId() {
         return this.id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getVisitor_name() {
-        return this.visitor_name;
-    }
-
-    public void setVisitor_name(String visitor_name) {
-        this.visitor_name = visitor_name;
     }
 
     public Long getVisit_event_id() {
@@ -158,6 +153,62 @@ public class VisitInfoEntity {
         this.visit_event_id = visit_event_id;
     }
 
+    public Long getServer_id() {
+        return this.server_id;
+    }
+
+    public void setServer_id(Long server_id) {
+        this.server_id = server_id;
+    }
+
+    public String getVisitor_name() {
+        return this.visitor_name;
+    }
+
+    public void setVisitor_name(String visitor_name) {
+        this.visitor_name = visitor_name;
+    }
+
+    public String getSex_type() {
+        return this.sex_type;
+    }
+
+    public void setSex_type(String sex_type) {
+        this.sex_type = sex_type;
+    }
+
+    public Date getBirthday() {
+        return this.birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAdress() {
+        return this.adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public String getNation() {
+        return this.nation;
+    }
+
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
+
+    public String getCert_type() {
+        return this.cert_type;
+    }
+
+    public void setCert_type(String cert_type) {
+        this.cert_type = cert_type;
+    }
+
     public String getId_numer() {
         return this.id_numer;
     }
@@ -166,28 +217,20 @@ public class VisitInfoEntity {
         this.id_numer = id_numer;
     }
 
-    public String getSex() {
-        return this.sex;
+    public String getPhone() {
+        return this.phone;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getBook_phone() {
-        return this.book_phone;
+    public String getCompany() {
+        return this.company;
     }
 
-    public void setBook_phone(String book_phone) {
-        this.book_phone = book_phone;
-    }
-
-    public String getDeparment() {
-        return this.deparment;
-    }
-
-    public void setDeparment(String deparment) {
-        this.deparment = deparment;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getGoods() {
@@ -198,12 +241,12 @@ public class VisitInfoEntity {
         this.goods = goods;
     }
 
-    public String getCar_plate() {
-        return this.car_plate;
+    public String getCar_number() {
+        return this.car_number;
     }
 
-    public void setCar_plate(String car_plate) {
-        this.car_plate = car_plate;
+    public void setCar_number(String car_number) {
+        this.car_number = car_number;
     }
 
     public String getImg_head() {
@@ -238,20 +281,20 @@ public class VisitInfoEntity {
         this.img_goods = img_goods;
     }
 
-    public String getIcNumber() {
-        return this.icNumber;
+    public String getIc_number() {
+        return this.ic_number;
     }
 
-    public void setIcNumber(String icNumber) {
-        this.icNumber = icNumber;
+    public void setIc_number(String ic_number) {
+        this.ic_number = ic_number;
     }
 
-    public String getPhysicsNumber() {
-        return this.physicsNumber;
+    public String getPhysics_number() {
+        return this.physics_number;
     }
 
-    public void setPhysicsNumber(String physicsNumber) {
-        this.physicsNumber = physicsNumber;
+    public void setPhysics_number(String physics_number) {
+        this.physics_number = physics_number;
     }
 
     public Date getIn_time() {
@@ -293,5 +336,88 @@ public class VisitInfoEntity {
     public void setIs_upload_out(Integer is_upload_out) {
         this.is_upload_out = is_upload_out;
     }
+
+    @Generated(hash = 19551344)
+    private transient Long visitEvent__resolvedKey;
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 37586733)
+    public VisitEventEntity getVisitEvent() {
+        Long __key = this.visit_event_id;
+        if (visitEvent__resolvedKey == null
+                || !visitEvent__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            VisitEventEntityDao targetDao = daoSession.getVisitEventEntityDao();
+            VisitEventEntity visitEventNew = targetDao.load(__key);
+            synchronized (this) {
+                visitEvent = visitEventNew;
+                visitEvent__resolvedKey = __key;
+            }
+        }
+        return visitEvent;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 697922519)
+    public void setVisitEvent(VisitEventEntity visitEvent) {
+        synchronized (this) {
+            this.visitEvent = visitEvent;
+            visit_event_id = visitEvent == null ? null : visitEvent.getId();
+            visitEvent__resolvedKey = visit_event_id;
+        }
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 7777357)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getVisitInfoEntityDao() : null;
+    }
+
 
 }
