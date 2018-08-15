@@ -29,12 +29,15 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
         public final static Property CauseId = new Property(2, Long.class, "causeId", false, "CAUSE_ID");
         public final static Property IntervieweeId = new Property(3, Long.class, "intervieweeId", false, "INTERVIEWEE_ID");
         public final static Property ShifitId = new Property(4, Long.class, "shifitId", false, "SHIFIT_ID");
-        public final static Property DeviceId = new Property(5, Long.class, "deviceId", false, "DEVICE_ID");
-        public final static Property VisitorCount = new Property(6, Integer.class, "visitorCount", false, "VISITOR_COUNT");
-        public final static Property InsetTime = new Property(7, java.util.Date.class, "insetTime", false, "INSET_TIME");
-        public final static Property IsOrder = new Property(8, Integer.class, "isOrder", false, "IS_ORDER");
-        public final static Property OrderPhone = new Property(9, String.class, "orderPhone", false, "ORDER_PHONE");
-        public final static Property Is_upload = new Property(10, Integer.class, "is_upload", false, "IS_UPLOAD");
+        public final static Property DeparmentId = new Property(5, Long.class, "deparmentId", false, "DEPARMENT_ID");
+        public final static Property DeparmentName = new Property(6, String.class, "deparmentName", false, "DEPARMENT_NAME");
+        public final static Property VisitedName = new Property(7, String.class, "visitedName", false, "VISITED_NAME");
+        public final static Property DeviceId = new Property(8, Long.class, "deviceId", false, "DEVICE_ID");
+        public final static Property VisitorCount = new Property(9, Integer.class, "visitorCount", false, "VISITOR_COUNT");
+        public final static Property InsetTime = new Property(10, java.util.Date.class, "insetTime", false, "INSET_TIME");
+        public final static Property IsOrder = new Property(11, Integer.class, "isOrder", false, "IS_ORDER");
+        public final static Property OrderPhone = new Property(12, String.class, "orderPhone", false, "ORDER_PHONE");
+        public final static Property Is_upload = new Property(13, Integer.class, "is_upload", false, "IS_UPLOAD");
     }
 
 
@@ -55,12 +58,15 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
                 "\"CAUSE_ID\" INTEGER," + // 2: causeId
                 "\"INTERVIEWEE_ID\" INTEGER," + // 3: intervieweeId
                 "\"SHIFIT_ID\" INTEGER," + // 4: shifitId
-                "\"DEVICE_ID\" INTEGER," + // 5: deviceId
-                "\"VISITOR_COUNT\" INTEGER," + // 6: visitorCount
-                "\"INSET_TIME\" INTEGER," + // 7: insetTime
-                "\"IS_ORDER\" INTEGER," + // 8: isOrder
-                "\"ORDER_PHONE\" TEXT," + // 9: orderPhone
-                "\"IS_UPLOAD\" INTEGER);"); // 10: is_upload
+                "\"DEPARMENT_ID\" INTEGER," + // 5: deparmentId
+                "\"DEPARMENT_NAME\" TEXT," + // 6: deparmentName
+                "\"VISITED_NAME\" TEXT," + // 7: visitedName
+                "\"DEVICE_ID\" INTEGER," + // 8: deviceId
+                "\"VISITOR_COUNT\" INTEGER," + // 9: visitorCount
+                "\"INSET_TIME\" INTEGER," + // 10: insetTime
+                "\"IS_ORDER\" INTEGER," + // 11: isOrder
+                "\"ORDER_PHONE\" TEXT," + // 12: orderPhone
+                "\"IS_UPLOAD\" INTEGER);"); // 13: is_upload
     }
 
     /** Drops the underlying database table. */
@@ -98,34 +104,49 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
             stmt.bindLong(5, shifitId);
         }
  
+        Long deparmentId = entity.getDeparmentId();
+        if (deparmentId != null) {
+            stmt.bindLong(6, deparmentId);
+        }
+ 
+        String deparmentName = entity.getDeparmentName();
+        if (deparmentName != null) {
+            stmt.bindString(7, deparmentName);
+        }
+ 
+        String visitedName = entity.getVisitedName();
+        if (visitedName != null) {
+            stmt.bindString(8, visitedName);
+        }
+ 
         Long deviceId = entity.getDeviceId();
         if (deviceId != null) {
-            stmt.bindLong(6, deviceId);
+            stmt.bindLong(9, deviceId);
         }
  
         Integer visitorCount = entity.getVisitorCount();
         if (visitorCount != null) {
-            stmt.bindLong(7, visitorCount);
+            stmt.bindLong(10, visitorCount);
         }
  
         java.util.Date insetTime = entity.getInsetTime();
         if (insetTime != null) {
-            stmt.bindLong(8, insetTime.getTime());
+            stmt.bindLong(11, insetTime.getTime());
         }
  
         Integer isOrder = entity.getIsOrder();
         if (isOrder != null) {
-            stmt.bindLong(9, isOrder);
+            stmt.bindLong(12, isOrder);
         }
  
         String orderPhone = entity.getOrderPhone();
         if (orderPhone != null) {
-            stmt.bindString(10, orderPhone);
+            stmt.bindString(13, orderPhone);
         }
  
         Integer is_upload = entity.getIs_upload();
         if (is_upload != null) {
-            stmt.bindLong(11, is_upload);
+            stmt.bindLong(14, is_upload);
         }
     }
 
@@ -158,34 +179,49 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
             stmt.bindLong(5, shifitId);
         }
  
+        Long deparmentId = entity.getDeparmentId();
+        if (deparmentId != null) {
+            stmt.bindLong(6, deparmentId);
+        }
+ 
+        String deparmentName = entity.getDeparmentName();
+        if (deparmentName != null) {
+            stmt.bindString(7, deparmentName);
+        }
+ 
+        String visitedName = entity.getVisitedName();
+        if (visitedName != null) {
+            stmt.bindString(8, visitedName);
+        }
+ 
         Long deviceId = entity.getDeviceId();
         if (deviceId != null) {
-            stmt.bindLong(6, deviceId);
+            stmt.bindLong(9, deviceId);
         }
  
         Integer visitorCount = entity.getVisitorCount();
         if (visitorCount != null) {
-            stmt.bindLong(7, visitorCount);
+            stmt.bindLong(10, visitorCount);
         }
  
         java.util.Date insetTime = entity.getInsetTime();
         if (insetTime != null) {
-            stmt.bindLong(8, insetTime.getTime());
+            stmt.bindLong(11, insetTime.getTime());
         }
  
         Integer isOrder = entity.getIsOrder();
         if (isOrder != null) {
-            stmt.bindLong(9, isOrder);
+            stmt.bindLong(12, isOrder);
         }
  
         String orderPhone = entity.getOrderPhone();
         if (orderPhone != null) {
-            stmt.bindString(10, orderPhone);
+            stmt.bindString(13, orderPhone);
         }
  
         Integer is_upload = entity.getIs_upload();
         if (is_upload != null) {
-            stmt.bindLong(11, is_upload);
+            stmt.bindLong(14, is_upload);
         }
     }
 
@@ -202,12 +238,15 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // causeId
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // intervieweeId
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // shifitId
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // deviceId
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // visitorCount
-            cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)), // insetTime
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // isOrder
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // orderPhone
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10) // is_upload
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // deparmentId
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // deparmentName
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // visitedName
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // deviceId
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // visitorCount
+            cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // insetTime
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // isOrder
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // orderPhone
+            cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13) // is_upload
         );
         return entity;
     }
@@ -219,12 +258,15 @@ public class VisitEventEntityDao extends AbstractDao<VisitEventEntity, Long> {
         entity.setCauseId(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setIntervieweeId(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setShifitId(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setDeviceId(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setVisitorCount(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setInsetTime(cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)));
-        entity.setIsOrder(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setOrderPhone(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setIs_upload(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setDeparmentId(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setDeparmentName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setVisitedName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDeviceId(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setVisitorCount(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setInsetTime(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
+        entity.setIsOrder(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setOrderPhone(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setIs_upload(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
      }
     
     @Override

@@ -44,16 +44,18 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
         public final static Property Goods = new Property(12, String.class, "goods", false, "GOODS");
         public final static Property Car_number = new Property(13, String.class, "car_number", false, "CAR_NUMBER");
         public final static Property Img_head = new Property(14, String.class, "img_head", false, "IMG_HEAD");
-        public final static Property Img_portrait = new Property(15, String.class, "img_portrait", false, "IMG_PORTRAIT");
-        public final static Property Img_cert = new Property(16, String.class, "img_cert", false, "IMG_CERT");
-        public final static Property Img_goods = new Property(17, String.class, "img_goods", false, "IMG_GOODS");
-        public final static Property Ic_number = new Property(18, String.class, "ic_number", false, "IC_NUMBER");
-        public final static Property Physics_number = new Property(19, String.class, "physics_number", false, "PHYSICS_NUMBER");
-        public final static Property In_time = new Property(20, java.util.Date.class, "in_time", false, "IN_TIME");
-        public final static Property Out_time = new Property(21, java.util.Date.class, "out_time", false, "OUT_TIME");
-        public final static Property System_id = new Property(22, String.class, "system_id", false, "SYSTEM_ID");
-        public final static Property Is_upload_in = new Property(23, Integer.class, "is_upload_in", false, "IS_UPLOAD_IN");
-        public final static Property Is_upload_out = new Property(24, Integer.class, "is_upload_out", false, "IS_UPLOAD_OUT");
+        public final static Property Img_cert = new Property(15, String.class, "img_cert", false, "IMG_CERT");
+        public final static Property Img_portrait = new Property(16, String.class, "img_portrait", false, "IMG_PORTRAIT");
+        public final static Property Img_scan = new Property(17, String.class, "img_scan", false, "IMG_SCAN");
+        public final static Property Img_goods = new Property(18, String.class, "img_goods", false, "IMG_GOODS");
+        public final static Property Ic_number = new Property(19, String.class, "ic_number", false, "IC_NUMBER");
+        public final static Property Physics_number = new Property(20, String.class, "physics_number", false, "PHYSICS_NUMBER");
+        public final static Property In_time = new Property(21, java.util.Date.class, "in_time", false, "IN_TIME");
+        public final static Property Out_time = new Property(22, java.util.Date.class, "out_time", false, "OUT_TIME");
+        public final static Property System_id = new Property(23, String.class, "system_id", false, "SYSTEM_ID");
+        public final static Property Is_upload_in = new Property(24, Integer.class, "is_upload_in", false, "IS_UPLOAD_IN");
+        public final static Property Is_upload_out = new Property(25, Integer.class, "is_upload_out", false, "IS_UPLOAD_OUT");
+        public final static Property Is_upload_img = new Property(26, Integer.class, "is_upload_img", false, "IS_UPLOAD_IMG");
     }
 
     private DaoSession daoSession;
@@ -87,16 +89,18 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
                 "\"GOODS\" TEXT," + // 12: goods
                 "\"CAR_NUMBER\" TEXT," + // 13: car_number
                 "\"IMG_HEAD\" TEXT," + // 14: img_head
-                "\"IMG_PORTRAIT\" TEXT," + // 15: img_portrait
-                "\"IMG_CERT\" TEXT," + // 16: img_cert
-                "\"IMG_GOODS\" TEXT," + // 17: img_goods
-                "\"IC_NUMBER\" TEXT," + // 18: ic_number
-                "\"PHYSICS_NUMBER\" TEXT," + // 19: physics_number
-                "\"IN_TIME\" INTEGER," + // 20: in_time
-                "\"OUT_TIME\" INTEGER," + // 21: out_time
-                "\"SYSTEM_ID\" TEXT," + // 22: system_id
-                "\"IS_UPLOAD_IN\" INTEGER," + // 23: is_upload_in
-                "\"IS_UPLOAD_OUT\" INTEGER);"); // 24: is_upload_out
+                "\"IMG_CERT\" TEXT," + // 15: img_cert
+                "\"IMG_PORTRAIT\" TEXT," + // 16: img_portrait
+                "\"IMG_SCAN\" TEXT," + // 17: img_scan
+                "\"IMG_GOODS\" TEXT," + // 18: img_goods
+                "\"IC_NUMBER\" TEXT," + // 19: ic_number
+                "\"PHYSICS_NUMBER\" TEXT," + // 20: physics_number
+                "\"IN_TIME\" INTEGER," + // 21: in_time
+                "\"OUT_TIME\" INTEGER," + // 22: out_time
+                "\"SYSTEM_ID\" TEXT," + // 23: system_id
+                "\"IS_UPLOAD_IN\" INTEGER," + // 24: is_upload_in
+                "\"IS_UPLOAD_OUT\" INTEGER," + // 25: is_upload_out
+                "\"IS_UPLOAD_IMG\" INTEGER);"); // 26: is_upload_img
     }
 
     /** Drops the underlying database table. */
@@ -184,54 +188,64 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
             stmt.bindString(15, img_head);
         }
  
-        String img_portrait = entity.getImg_portrait();
-        if (img_portrait != null) {
-            stmt.bindString(16, img_portrait);
-        }
- 
         String img_cert = entity.getImg_cert();
         if (img_cert != null) {
-            stmt.bindString(17, img_cert);
+            stmt.bindString(16, img_cert);
+        }
+ 
+        String img_portrait = entity.getImg_portrait();
+        if (img_portrait != null) {
+            stmt.bindString(17, img_portrait);
+        }
+ 
+        String img_scan = entity.getImg_scan();
+        if (img_scan != null) {
+            stmt.bindString(18, img_scan);
         }
  
         String img_goods = entity.getImg_goods();
         if (img_goods != null) {
-            stmt.bindString(18, img_goods);
+            stmt.bindString(19, img_goods);
         }
  
         String ic_number = entity.getIc_number();
         if (ic_number != null) {
-            stmt.bindString(19, ic_number);
+            stmt.bindString(20, ic_number);
         }
  
         String physics_number = entity.getPhysics_number();
         if (physics_number != null) {
-            stmt.bindString(20, physics_number);
+            stmt.bindString(21, physics_number);
         }
  
         java.util.Date in_time = entity.getIn_time();
         if (in_time != null) {
-            stmt.bindLong(21, in_time.getTime());
+            stmt.bindLong(22, in_time.getTime());
         }
  
         java.util.Date out_time = entity.getOut_time();
         if (out_time != null) {
-            stmt.bindLong(22, out_time.getTime());
+            stmt.bindLong(23, out_time.getTime());
         }
  
         String system_id = entity.getSystem_id();
         if (system_id != null) {
-            stmt.bindString(23, system_id);
+            stmt.bindString(24, system_id);
         }
  
         Integer is_upload_in = entity.getIs_upload_in();
         if (is_upload_in != null) {
-            stmt.bindLong(24, is_upload_in);
+            stmt.bindLong(25, is_upload_in);
         }
  
         Integer is_upload_out = entity.getIs_upload_out();
         if (is_upload_out != null) {
-            stmt.bindLong(25, is_upload_out);
+            stmt.bindLong(26, is_upload_out);
+        }
+ 
+        Integer is_upload_img = entity.getIs_upload_img();
+        if (is_upload_img != null) {
+            stmt.bindLong(27, is_upload_img);
         }
     }
 
@@ -314,54 +328,64 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
             stmt.bindString(15, img_head);
         }
  
-        String img_portrait = entity.getImg_portrait();
-        if (img_portrait != null) {
-            stmt.bindString(16, img_portrait);
-        }
- 
         String img_cert = entity.getImg_cert();
         if (img_cert != null) {
-            stmt.bindString(17, img_cert);
+            stmt.bindString(16, img_cert);
+        }
+ 
+        String img_portrait = entity.getImg_portrait();
+        if (img_portrait != null) {
+            stmt.bindString(17, img_portrait);
+        }
+ 
+        String img_scan = entity.getImg_scan();
+        if (img_scan != null) {
+            stmt.bindString(18, img_scan);
         }
  
         String img_goods = entity.getImg_goods();
         if (img_goods != null) {
-            stmt.bindString(18, img_goods);
+            stmt.bindString(19, img_goods);
         }
  
         String ic_number = entity.getIc_number();
         if (ic_number != null) {
-            stmt.bindString(19, ic_number);
+            stmt.bindString(20, ic_number);
         }
  
         String physics_number = entity.getPhysics_number();
         if (physics_number != null) {
-            stmt.bindString(20, physics_number);
+            stmt.bindString(21, physics_number);
         }
  
         java.util.Date in_time = entity.getIn_time();
         if (in_time != null) {
-            stmt.bindLong(21, in_time.getTime());
+            stmt.bindLong(22, in_time.getTime());
         }
  
         java.util.Date out_time = entity.getOut_time();
         if (out_time != null) {
-            stmt.bindLong(22, out_time.getTime());
+            stmt.bindLong(23, out_time.getTime());
         }
  
         String system_id = entity.getSystem_id();
         if (system_id != null) {
-            stmt.bindString(23, system_id);
+            stmt.bindString(24, system_id);
         }
  
         Integer is_upload_in = entity.getIs_upload_in();
         if (is_upload_in != null) {
-            stmt.bindLong(24, is_upload_in);
+            stmt.bindLong(25, is_upload_in);
         }
  
         Integer is_upload_out = entity.getIs_upload_out();
         if (is_upload_out != null) {
-            stmt.bindLong(25, is_upload_out);
+            stmt.bindLong(26, is_upload_out);
+        }
+ 
+        Integer is_upload_img = entity.getIs_upload_img();
+        if (is_upload_img != null) {
+            stmt.bindLong(27, is_upload_img);
         }
     }
 
@@ -394,16 +418,18 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // goods
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // car_number
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // img_head
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // img_portrait
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // img_cert
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // img_goods
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // ic_number
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // physics_number
-            cursor.isNull(offset + 20) ? null : new java.util.Date(cursor.getLong(offset + 20)), // in_time
-            cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)), // out_time
-            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // system_id
-            cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23), // is_upload_in
-            cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24) // is_upload_out
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // img_cert
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // img_portrait
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // img_scan
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // img_goods
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // ic_number
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // physics_number
+            cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)), // in_time
+            cursor.isNull(offset + 22) ? null : new java.util.Date(cursor.getLong(offset + 22)), // out_time
+            cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23), // system_id
+            cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24), // is_upload_in
+            cursor.isNull(offset + 25) ? null : cursor.getInt(offset + 25), // is_upload_out
+            cursor.isNull(offset + 26) ? null : cursor.getInt(offset + 26) // is_upload_img
         );
         return entity;
     }
@@ -425,16 +451,18 @@ public class VisitInfoEntityDao extends AbstractDao<VisitInfoEntity, Long> {
         entity.setGoods(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setCar_number(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setImg_head(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setImg_portrait(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setImg_cert(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setImg_goods(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setIc_number(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setPhysics_number(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
-        entity.setIn_time(cursor.isNull(offset + 20) ? null : new java.util.Date(cursor.getLong(offset + 20)));
-        entity.setOut_time(cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)));
-        entity.setSystem_id(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
-        entity.setIs_upload_in(cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23));
-        entity.setIs_upload_out(cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24));
+        entity.setImg_cert(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setImg_portrait(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setImg_scan(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setImg_goods(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setIc_number(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setPhysics_number(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setIn_time(cursor.isNull(offset + 21) ? null : new java.util.Date(cursor.getLong(offset + 21)));
+        entity.setOut_time(cursor.isNull(offset + 22) ? null : new java.util.Date(cursor.getLong(offset + 22)));
+        entity.setSystem_id(cursor.isNull(offset + 23) ? null : cursor.getString(offset + 23));
+        entity.setIs_upload_in(cursor.isNull(offset + 24) ? null : cursor.getInt(offset + 24));
+        entity.setIs_upload_out(cursor.isNull(offset + 25) ? null : cursor.getInt(offset + 25));
+        entity.setIs_upload_img(cursor.isNull(offset + 26) ? null : cursor.getInt(offset + 26));
      }
     
     @Override

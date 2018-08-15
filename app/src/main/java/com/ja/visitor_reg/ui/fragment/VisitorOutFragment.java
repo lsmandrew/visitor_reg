@@ -66,6 +66,7 @@ public class VisitorOutFragment extends BaseFragment {
                     recordItem.setVisitPhone(itme.getPhone());
                     recordItem.setVisitTime(DateUtil.getDateTimeFormat(itme.getIn_time()));
                     recordItem.setVisitId(itme.getId());
+                    recordItem.setVisitedName(itme.getVisitEvent().getVisitedName());
                     mRecordList.add(recordItem);
                 }
                 mVisitRecordAdapter.notifyDataSetChanged();

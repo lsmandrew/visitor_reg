@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,6 +28,7 @@ import com.ja.visitor_reg.common.util.DateUtil;
 import com.ja.visitor_reg.common.util.IdCardReaderUtil;
 import com.ja.visitor_reg.common.util.QRUtil;
 import com.ja.visitor_reg.common.util.SharedPreferencesUtil;
+import com.ja.visitor_reg.common.util.SoftKeyboardUtil;
 import com.ja.visitor_reg.common.util.StringUtil;
 import com.ja.visitor_reg.config.GlobalConfig;
 import com.ja.visitor_reg.entity.VisitEventEntity;
@@ -169,14 +169,13 @@ public class VisitorInFragment extends BaseFragment {
 
         });
         //cert type
-        //mCertTypeList.add(new CertTypeItem("身份证"));
-        //mCertTypeList.add(new CertTypeItem("其他"));
         mCertAdapter = new CertTypeAdapter(mContext, mCertTypeList);
         mSpCertType.setAdapter(mCertAdapter);
         //sex type
         String[] sexTypes = getResources().getStringArray(R.array.sex_types);
+        int code = 0;
         for (String item : sexTypes) {
-            mSexTypeList.add(new SexTypeItem(item));
+            mSexTypeList.add(new SexTypeItem(item, Integer.toString(code++)));
         }
         mSexAdapter = new SexTypeAdapter(mContext, mSexTypeList);
         mSpSexType.setAdapter(mSexAdapter);
@@ -283,11 +282,7 @@ public class VisitorInFragment extends BaseFragment {
             mPopupKeyboard.dismiss(getActivity());
         }
         //关闭软键盘
-        InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (null != inputManager && null != getView().getWindowToken()) {
-            inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-        }
-
+        SoftKeyboardUtil.hideKeyboard(mContext, getView());
     }
 
     @OnClick(R.id.edt_interviewee)
@@ -306,6 +301,8 @@ public class VisitorInFragment extends BaseFragment {
                 mEdtBePhone.setText(vdInfoItem.getWorkPhone());
                 mEventEntity.setIntervieweeId(vdInfoItem.getId());//被訪者id
                 mEventEntity.setDeparmentId(vdInfoItem.getDeparmentId());//部门id
+                mEventEntity.setVisitedName(vdInfoItem.getName());//被访者名字
+                mEventEntity.setDeparmentName(vdInfoItem.getDepartment());//部门名称
 
             }
         });
@@ -402,7 +399,8 @@ public class VisitorInFragment extends BaseFragment {
         if (StringUtil.isEmptyTrimed(picName)) {
             SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
             //name:C_设备名_证件号码_时间.jpg
-            StringBuilder stringBuilder = new StringBuilder("C_")
+            StringBuilder stringBuilder = new StringBuilder(GlobalConfig.get_ImgTypeID(
+                    GlobalConfig.ENUM_IMG_TYPE.LIVE_IMG))
                     .append(spUtil.getStringValue("devName", ""))
                     .append("_")
                     .append(strIdCode)
@@ -442,7 +440,8 @@ public class VisitorInFragment extends BaseFragment {
         if (StringUtil.isEmptyTrimed(picName)) {
             SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
             //name:E_设备名_证件号码_时间.jpg
-            StringBuilder stringBuilder = new StringBuilder("E_")
+            StringBuilder stringBuilder = new StringBuilder(GlobalConfig.get_ImgTypeID(
+                    GlobalConfig.ENUM_IMG_TYPE.GOODS_IMG))
                     .append(spUtil.getStringValue("devName", ""))
                     .append("_")
                     .append(strIdCode)
@@ -481,7 +480,8 @@ public class VisitorInFragment extends BaseFragment {
         if (StringUtil.isEmptyTrimed(picName)) {
             SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance();
             //name:B_设备名_证件号码_时间.jpg
-            StringBuilder stringBuilder = new StringBuilder("B_")
+            StringBuilder stringBuilder = new StringBuilder(GlobalConfig.get_ImgTypeID(
+                    GlobalConfig.ENUM_IMG_TYPE.ID_IMG))
                     .append(spUtil.getStringValue("devName", ""))
                     .append("_")
                     .append(strIdCode)
@@ -534,6 +534,10 @@ public class VisitorInFragment extends BaseFragment {
             mBtnStartCheckIn.setText("重新登记");
             mEventEntity.setVisitorCount(Integer.parseInt(strCount));
             mEventEntity.setInsetTime(new Date());
+            CauseTypeItem causeType = (CauseTypeItem)mSpCause.getSelectedItem();
+            if (null != causeType) {//事由
+                mEventEntity.setCauseId((long) Integer.parseInt(causeType.getCode()));
+            }
             if (mCBIsBook.isChecked()) {//is book
                 mEventEntity.setIsOrder(1);
                 mEventEntity.setOrderPhone(mEdtBookPhone.getText().toString());
@@ -692,14 +696,19 @@ public class VisitorInFragment extends BaseFragment {
         visitEntity.setId(null);
         //來訪事件
         visitEntity.setVisit_event_id(mEventEntity.getId());
+        //证件类型
+        CertTypeItem certType = (CertTypeItem) mSpCertType.getSelectedItem();
+        if (null != certType) {
+            visitEntity.setCert_type(certType.getCode());
+        }
         //来访者名字
         if (null != mEdtName.getText()) {
             visitEntity.setVisitor_name(mEdtName.getText().toString());
         }
         //性别
-        if (null != mSpSexType.getSelectedItem()) {
-            SexTypeItem item = (SexTypeItem) mSpSexType.getSelectedItem();
-            visitEntity.setSex_type(item.getName());
+        SexTypeItem item = (SexTypeItem) mSpSexType.getSelectedItem();
+        if (null != item) {
+            visitEntity.setSex_type(item.getCode());
         }
         //证件号码
         if (null != mEdtIdCode.getText()) {

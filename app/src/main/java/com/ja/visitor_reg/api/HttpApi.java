@@ -3,8 +3,8 @@ package com.ja.visitor_reg.api;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.ja.visitor_reg.common.util.ApplicationUtil;
 import com.ja.visitor_reg.common.util.SharedPreferencesUtil;
+import com.ja.visitor_reg.config.GlobalConfig;
 import com.ja.visitor_reg.json.AUTHOR_CARD;
 import com.ja.visitor_reg.json.DISCARD_INFO;
 import com.ja.visitor_reg.json.LOGIN_INFO;
@@ -39,7 +39,8 @@ public class HttpApi {
 
     private static final String TAG = "HttpApi";
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
-    private static final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
+    private static final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpeg");
+    private static final MediaType MEDIA_TYPE_FILE = MediaType.parse("file");
     public static String TOKEN = "";
 
     /**
@@ -595,7 +596,7 @@ public class HttpApi {
      * "leaveTime": "2018-08-14T06:14:24.950Z"
      * }
      * resp
-     *
+     * {"msg":"success","code":0,"update":true}
      */
     public boolean upload_VisitOut(VISITOUT_UPLOAD visitout_upload, long timeout) {
         boolean result = false;
@@ -648,27 +649,29 @@ public class HttpApi {
 
     /**
      * http上传图片 单张图片
-     * @param imgPath
-     * @return
+     * @param imgPath 图片路径
+     * @param timeout 连接时间
+     * @return true/false
      */
-   public boolean upload_ImgFile(String imgPath) {
+   public boolean upload_ImgFile(String imgPath, long timeout) {
        int cacheSize = 10 * 1024 * 1024;
-
+       String imageType = "multipart/form-data";
        try {
            //设置时间和缓存
            OkHttpClient client = new OkHttpClient.Builder()
-                   .connectTimeout(15, TimeUnit.SECONDS)
+                   .connectTimeout(timeout, TimeUnit.SECONDS)
                    .writeTimeout(20, TimeUnit.SECONDS)
                    .readTimeout(20, TimeUnit.SECONDS)
-                   .cache(new Cache(new File(ApplicationUtil.getContext().getFilesDir().getPath()), cacheSize))
+                   .cache(new Cache(new File(GlobalConfig.get_ImgPath()), cacheSize))//设置缓存
                    .build();
 
-           MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
-
+           //multipart body
+           MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
            File imgFile = new File(imgPath);
            if(imgFile.exists()){
+               Log.i(TAG, "path= " + imgPath);
                Log.i(TAG, imgFile.getName());
-               mbody.addFormDataPart("image", imgFile.getName(), RequestBody.create(MEDIA_TYPE_JPG, imgFile));
+               mbody.addFormDataPart("multipartFile", imgFile.getName(), RequestBody.create(MEDIA_TYPE_JPG, imgFile));
            }
 
            //packet url
@@ -679,38 +682,26 @@ public class HttpApi {
                    .append(sp.getIntValue("serPort", 0))
                    .append("/ja-api/api/image/imageUpload");
 
+           Log.d(TAG, "upload_ImgFile url=" + urlBuilder.toString());
            RequestBody requestBody = mbody.build();
            Request request = new Request.Builder()
-                   .header("Accept", "text/html")
+                   .header("Content-Type", "multipart/form-data")
+                   .addHeader("Accept", "text/html")
+                   .addHeader("token", TOKEN)
                    .url(urlBuilder.toString())
                    .post(requestBody)
                    .build();
-
-//       client.newCall(request).enqueue(new Callback() {
-//           @Override
-//           public void onFailure(Call call, IOException e) {
-//           }
-//
-//           @Override
-//           public void onResponse(Call call, Response response) throws IOException {
-//               Log.i("InfoMSG", response.body().string());
-//           }
-//       });
 
            Response resp = client.newCall(request).execute();
            String strBody = resp.body().string();
            Log.d(TAG, "resp: " + strBody);
            RESP_MSG resp_msg  = JSON.parseObject(strBody, RESP_MSG.class);
            Log.d(TAG, "parse msg: " + resp_msg.getMsg());
-
+           return  resp_msg.getMsg().equals("success");
        } catch (Exception e) {
            e.printStackTrace();
            return false;
        }
-
-       return true;
    }
-
-
 
 }

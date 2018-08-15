@@ -75,8 +75,9 @@ public class VisitInfoEntity {
     private String goods;//携带物品(文字描述)
     private String car_number;//车牌
     private String img_head;//头像(图片名)
-    private String img_portrait;//人像(图片名)
     private String img_cert;//证件照片(图片名)
+    private String img_portrait;//人像(图片名)
+    private String img_scan;//证件扫描照(扫描仪)
     private String img_goods;//携带物品(图片名)
     private String ic_number;//ic卡号(二维码为虚拟ic卡：ic-4byte后面补零 QR-5byte后面补零)
     private String physics_number;//二代证物理卡号(8byte16位)
@@ -85,6 +86,7 @@ public class VisitInfoEntity {
     private String system_id;//记录标识
     private Integer is_upload_in;//登记是否上传(0未,1已)
     private Integer is_upload_out;//退出是否上传(0未,1已)
+    private Integer is_upload_img;//图片是否上传(按位判断1:证件头像 2:证件照 3:现场人像 4:证件扫描图像 5:携带物品)
     @ToOne(joinProperty = "visit_event_id")
     VisitEventEntity visitEvent;
     /**
@@ -98,14 +100,15 @@ public class VisitInfoEntity {
     @Generated(hash = 1560708088)
     private transient VisitInfoEntityDao myDao;
 
-    @Generated(hash = 746256291)
+    @Generated(hash = 140338833)
     public VisitInfoEntity(Long id, Long visit_event_id, Long server_id,
                            String visitor_name, String sex_type, Date birthday, String adress,
                            String nation, String cert_type, String id_numer, String phone,
                            String company, String goods, String car_number, String img_head,
-                           String img_portrait, String img_cert, String img_goods,
+                           String img_cert, String img_portrait, String img_scan, String img_goods,
                            String ic_number, String physics_number, Date in_time, Date out_time,
-                           String system_id, Integer is_upload_in, Integer is_upload_out) {
+                           String system_id, Integer is_upload_in, Integer is_upload_out,
+                           Integer is_upload_img) {
         this.id = id;
         this.visit_event_id = visit_event_id;
         this.server_id = server_id;
@@ -121,8 +124,9 @@ public class VisitInfoEntity {
         this.goods = goods;
         this.car_number = car_number;
         this.img_head = img_head;
-        this.img_portrait = img_portrait;
         this.img_cert = img_cert;
+        this.img_portrait = img_portrait;
+        this.img_scan = img_scan;
         this.img_goods = img_goods;
         this.ic_number = ic_number;
         this.physics_number = physics_number;
@@ -131,10 +135,51 @@ public class VisitInfoEntity {
         this.system_id = system_id;
         this.is_upload_in = is_upload_in;
         this.is_upload_out = is_upload_out;
+        this.is_upload_img = is_upload_img;
     }
 
     @Generated(hash = 1676749005)
     public VisitInfoEntity() {
+    }
+
+    @Generated(hash = 19551344)
+    private transient Long visitEvent__resolvedKey;
+
+    @Override
+    public String toString() {
+        return "VisitInfoEntity{" +
+                "id=" + id +
+                ", visit_event_id=" + visit_event_id +
+                ", server_id=" + server_id +
+                ", visitor_name='" + visitor_name + '\'' +
+                ", sex_type='" + sex_type + '\'' +
+                ", birthday=" + birthday +
+                ", adress='" + adress + '\'' +
+                ", nation='" + nation + '\'' +
+                ", cert_type='" + cert_type + '\'' +
+                ", id_numer='" + id_numer + '\'' +
+                ", phone='" + phone + '\'' +
+                ", company='" + company + '\'' +
+                ", goods='" + goods + '\'' +
+                ", car_number='" + car_number + '\'' +
+                ", img_head='" + img_head + '\'' +
+                ", img_cert='" + img_cert + '\'' +
+                ", img_portrait='" + img_portrait + '\'' +
+                ", img_scan='" + img_scan + '\'' +
+                ", img_goods='" + img_goods + '\'' +
+                ", ic_number='" + ic_number + '\'' +
+                ", physics_number='" + physics_number + '\'' +
+                ", in_time=" + in_time +
+                ", out_time=" + out_time +
+                ", system_id='" + system_id + '\'' +
+                ", is_upload_in=" + is_upload_in +
+                ", is_upload_out=" + is_upload_out +
+                ", is_upload_img=" + is_upload_img +
+                ", visitEvent=" + visitEvent +
+                ", daoSession=" + daoSession +
+                ", myDao=" + myDao +
+                ", visitEvent__resolvedKey=" + visitEvent__resolvedKey +
+                '}';
     }
 
     public Long getId() {
@@ -257,6 +302,14 @@ public class VisitInfoEntity {
         this.img_head = img_head;
     }
 
+    public String getImg_cert() {
+        return this.img_cert;
+    }
+
+    public void setImg_cert(String img_cert) {
+        this.img_cert = img_cert;
+    }
+
     public String getImg_portrait() {
         return this.img_portrait;
     }
@@ -265,12 +318,12 @@ public class VisitInfoEntity {
         this.img_portrait = img_portrait;
     }
 
-    public String getImg_cert() {
-        return this.img_cert;
+    public String getImg_scan() {
+        return this.img_scan;
     }
 
-    public void setImg_cert(String img_cert) {
-        this.img_cert = img_cert;
+    public void setImg_scan(String img_scan) {
+        this.img_scan = img_scan;
     }
 
     public String getImg_goods() {
@@ -337,8 +390,13 @@ public class VisitInfoEntity {
         this.is_upload_out = is_upload_out;
     }
 
-    @Generated(hash = 19551344)
-    private transient Long visitEvent__resolvedKey;
+    public Integer getIs_upload_img() {
+        return this.is_upload_img;
+    }
+
+    public void setIs_upload_img(Integer is_upload_img) {
+        this.is_upload_img = is_upload_img;
+    }
 
     /**
      * To-one relationship, resolved on first access.
